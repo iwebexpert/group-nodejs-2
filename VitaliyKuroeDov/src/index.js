@@ -1,3 +1,7 @@
 const music = require('./music')
 
-music.init()
+const init = () => {
+    music.init()
+}
+
+init()

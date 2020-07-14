@@ -1,9 +1,10 @@
-const color = require('colors')
 const soundEffects = require("node-sound-effects")
+const terminalText = require('./terminalText')
 
 exports.init = () => {
     soundEffects.play("upload")
-    console.log('LVL UP'.rainbow)
-
-
+    terminalText.init()
 }
+
+
+// https://github.com/iwebexpert/group-nodejs-2/pull/1
