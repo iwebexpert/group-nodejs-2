@@ -21,20 +21,22 @@ function rainbowMessage( message, colors, divider = "" ) {
   },"");
 
   console.log(  `${ coloredMessage } \n` );
-  beeper("*--*--*");
 }
 
 function printLine( message, clcFunc = CLC_FUNCTIONS.notice, ) {
   console.log( clcFunc(  `${ message } \n` ) );
-  beeper("*--*--*");
 }
 
 /**
  * Внимание! Использование beeper в VisualStudioCode через ее консоль, может не издавать звуков!!
  * В консоли PhpStrorm или через консоль PowerShel  -  все отлично, и воспроизводит звук, даже те сишгалы в виде "*"" и "-""
  **/
+function doBeep() {
+  beeper("*--*--*");
+}
+
 async function asyncBeep() {
-  await setTimeout( beeper, 1000);
+  await setTimeout( doBeep, 1000);
 };
 
 printLine( "Hello", CLC_FUNCTIONS.error );
