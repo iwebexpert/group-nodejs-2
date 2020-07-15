@@ -9,7 +9,7 @@ const CLC_FUNCTIONS = {
 }
 
 function rainbowMessage( message, colors, divider = "" ) {
-   const parts = message.split("");
+   const parts = message.split(divider);
    let colorIndex = 0;
    const coloredMessage =  parts.reduce( ( acc, el ) => {
       colorIndex++;
