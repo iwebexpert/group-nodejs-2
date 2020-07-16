@@ -1,9 +1,10 @@
 import { gTTS } from 'gtts.js'
 import * as readline from 'readline'
 import chalk from 'chalk'
+import path from 'path'
 const player = require('play-sound')()
 
-const filePath = 'output.mp3'
+const filePath = path.resolve(__dirname, 'output.mp3')
 
 const rl = readline.createInterface({
     input: process.stdin,
