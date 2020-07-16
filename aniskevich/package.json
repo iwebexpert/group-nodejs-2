@@ -12,5 +12,10 @@
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "gtts.js": "^1.0.1",
+    "play-sound": "^1.1.3"
   }
 }
