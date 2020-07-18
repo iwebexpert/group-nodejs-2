@@ -6,7 +6,7 @@ const CLC_FUNCTIONS = {
   warn: clc.yellow,
   notice: clc.blue,
   success: clc.green
-}
+};
 
 function rainbowMessage( message, colors, divider = "" ) {
    const parts = message.split(divider);
@@ -37,7 +37,7 @@ function doBeep() {
 
 async function asyncBeep() {
   await setTimeout( doBeep, 1000);
-};
+}
 
 printLine( "Hello", CLC_FUNCTIONS.error );
 
