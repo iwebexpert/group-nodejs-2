@@ -1,4 +1,5 @@
 const fs = require("fs");
+const chalk = require("chalk");
 
 const win = "Won";
 const lose = "Lost";
@@ -30,21 +31,20 @@ const prepareData = (data) => {
   const winningSpreeCount = countConsecutive(dataHelperArray, win);
   const losingSpreeCount = countConsecutive(dataHelperArray, lose);
 
-  return `
-    Total: ${total}
-    Games won: ${gamesWon}
-    Games lost: ${gamesLost}
-    Winning rate: ${winningRate}
-    Max. wining spree: ${winningSpreeCount}
-    Max. losing spree: ${losingSpreeCount}
-    `;
+  console.log(chalk`
+    Total: {blue ${total}}
+    Games won: {green ${gamesWon}}
+    Games lost: {red ${gamesLost}}
+    Winning rate: {${winningRate >= 1 ? "green" : "red"} ${winningRate}}
+    Max. wining spree: {green ${winningSpreeCount}}
+    Max. losing spree: {red ${losingSpreeCount}}
+  `);
 };
 
 const readStat = (filePath) => {
   fs.readFile(filePath, "utf-8", (err, data) => {
     if (err) throw err;
-
-    console.log(prepareData(data));
+    prepareData(data);
   });
 };
 
