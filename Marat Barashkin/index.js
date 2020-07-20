@@ -1,11 +1,3 @@
-let chalk = require('chalk');
-let beeper = require('beeper');
-
- (async () => {
-    await beeper();
-    await new Promise((resolve)=>{
-         setTimeout(()=>{resolve(console.log(chalk.blue.bgHex('#303845')('I always use the yarn package manager in my work\n')))},2000)
-    });
-    await beeper(2);
-})();
- // Ну и хватит
+// const lesson1 = require('./lesson_1/index');
+const lesson2 = require('./lesson_2/index');
+lesson2.play();
