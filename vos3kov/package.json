@@ -1,0 +1,15 @@
+{
+  "name": "vos3kov",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vostrikov_Pavel",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "jzz": "^1.0.8"
+  }
+}
