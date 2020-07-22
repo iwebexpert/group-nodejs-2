@@ -16,6 +16,8 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "gtts.js": "^1.0.1",
+    "inquirer": "^7.3.2",
+    "minimist": "^1.2.5",
     "play-sound": "^1.1.3"
   }
 }

@@ -1,17 +1,16 @@
 {
-  "name": "esau",
+  "name": "kholmanov_andrey",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "helloWorld.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^4.1.0",
-    "minimist": "^1.2.5",
-    "r2d2": "0.0.4",
-    "readline": "^1.3.0"
+    "ansi": "^0.3.1",
+    "cli-color": "^2.0.0",
+    "colors": "^1.4.0"
   }
 }

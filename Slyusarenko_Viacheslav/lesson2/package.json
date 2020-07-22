@@ -1,0 +1,20 @@
+{
+  "name": "lesson2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "runGame1": "node blackjackGame\\index.js",
+    "runGame2": "node headsAndTails\\index.js",
+    "log1": "node logsAnalytics\\index.js --file bj.log",
+    "log2": "node logsAnalytics\\index.js --file ht.log"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cli-color": "^2.0.0",
+    "minimist": "^1.2.5"
+  }
+}
