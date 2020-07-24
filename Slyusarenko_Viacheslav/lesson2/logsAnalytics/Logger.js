@@ -7,12 +7,14 @@
  *
  **/
 const fs = require('fs');
+const path = require('path');
 const { promisify } = require('util');
 
 const readFilePromisify = promisify( fs.readFile );
 
 class Logger {
-  static LOGS_PATH = __dirname + "\\" ;
+  static LOGS_PATH = path.resolve( __dirname );
+
   handleError = (err) => {
     if ( !err ) {
       return;
@@ -22,7 +24,7 @@ class Logger {
 
   /** записать в лог */
   writeLog(file, content, callBack = null ) {
-    const filePath = Logger.LOGS_PATH + file;
+    const filePath = path.join( Logger.LOGS_PATH, file );
     fs.readFile( filePath, 'utf-8', (err, data) => {
       const fileNotFound = (err && err.code === 'ENOENT');
       let logValue;
@@ -42,7 +44,7 @@ class Logger {
   }
   /** запустить анализ лог файла */
   analyze( logFile ) {
-    const filePath = Logger.LOGS_PATH + logFile;
+    const filePath = path.join( Logger.LOGS_PATH, logFile );
     Logger.readLog( filePath )
       .then(data => {
         const stats = JSON.parse(data);
