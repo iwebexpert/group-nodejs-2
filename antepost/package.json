@@ -11,9 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",
+    "cheerio": "^1.0.0-rc.3",
     "is-valid-path": "^0.1.1",
+    "iso-language-codes": "^1.0.7",
     "jzz": "^1.0.8",
+    "minimist": "^1.2.5",
     "morsee": "^1.0.6",
-    "promise-prompt": "^1.1.1"
+    "promise-prompt": "^1.1.1",
+    "request": "^2.88.2"
   }
 }
