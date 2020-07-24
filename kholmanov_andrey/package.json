@@ -11,6 +11,8 @@
   "dependencies": {
     "ansi": "^0.3.1",
     "cli-color": "^2.0.0",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "dotenv": "^8.2.0",
+    "minimist": "^1.2.5"
   }
 }
