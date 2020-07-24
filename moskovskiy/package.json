@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "minimist": "^1.2.5"
+    "cheerio": "^1.0.0-rc.3",
+    "minimist": "^1.2.5",
+    "request": "^2.88.2"
   }
 }
