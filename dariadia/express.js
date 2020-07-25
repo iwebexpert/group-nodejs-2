@@ -3,7 +3,7 @@ const consolidate = require("consolidate");
 const path = require("path");
 const request = require("request");
 const cheerio = require("cheerio");
-//const nodeCookie = require("node-cookie");
+const nodeCookie = require("node-cookie");
 
 const app = express();
 const pageRussian = "https://journal.bookmate.com/";
@@ -42,6 +42,10 @@ app.post("/articles", (req, res) => {
   const count = +req.body.count;
   const language = +req.body.language;
   const page = language === ru ? pageRussian : pageSerbian;
+
+  nodeCookie.create(res, "topic", topic);
+  nodeCookie.create(res, "count", count);
+  nodeCookie.create(res, "language", language);
 
   request(page, (err, response, body) => {
     if (!err && response.statusCode === 200) {
