@@ -1,0 +1,28 @@
+{{#if language}}
+  <h2>Читайте последние новости из книжного мира! {{language}}</h2>
+{{else}}
+  <h2>Pročitajte najnovije vesti iz sveta knjiga!</h2>
+{{/if}}
+
+<div>
+  {{#if language}}
+    <h2>Последние {{count}} статей</h2>
+  {{else}}
+    <h3>Poslednjih {{count}} članaka</h3>
+  {{/if}}
+
+  <ul style="list-style: none;">
+    {{#each articles}}
+      {{#if this.title}}
+        <li style="padding: 10px">
+          <img width="100px" src="{{this.cover}}" />
+          <div style="display: inline-block; vertical-align: top;">
+            <span>{{this.topicName}}</span>
+            <br>
+            <span>{{this.title}}</span>
+          </div>
+        </li>
+      {{/if}}
+    {{/each}}
+  </ul>
+</div>

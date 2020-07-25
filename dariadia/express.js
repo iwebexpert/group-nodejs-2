@@ -1,19 +1,25 @@
 const express = require("express");
 const consolidate = require("consolidate");
 const path = require("path");
+const request = require("request");
+const cheerio = require("cheerio");
 
 const app = express();
+const pageRussian = "https://journal.bookmate.com/";
+const pageSerbian = "https://zurnal.bookmate.com/";
+const ru = 1;
+const sr = 0;
+const legend = {
+  1: ["Книги", "Knjige"],
+  2: ["Тренды", "Trendovi"],
+  3: ["Интервью", "Intervjui"],
+  4: ["Писатели", "Pisci"],
+  5: ["Истории", "Priče"],
+  6: ["Букмейт", "Bookmate"],
+};
 
-const users = {
-  anna: {
-    username: "Anna",
-    age: 27,
-    skills: ["JS", "Node.js", "Express.js"],
-  },
-  ivan: {
-    username: "Ivan",
-    skills: ["TypeScript", "Node.js"],
-  },
+const getKeyByValue = (topicName) => {
+  return Object.keys(legend).find((key) => legend[key].includes(topicName));
 };
 
 app.engine("hbs", consolidate.handlebars);
@@ -26,65 +32,55 @@ app.use(express.urlencoded({ extended: false }));
 //Для работы с JSON
 app.use(express.json());
 
-//Пользовательские middleware
-app.use("/users", (req, res, next) => {
-  console.log("User middleware2! /users");
-  next();
-});
-
-//Срабатывает только на полное совпадение url
-app.all("/users", (req, res, next) => {
-  console.log("User middleware3! /users - app.all()");
-  next();
-});
-
-app.use((req, res, next) => {
-  //console.log(req.headers)
-  if (req.headers.test && req.headers.test === "js") {
-    req.test = "Test Ok! Middleware works";
-  }
-  next();
-});
-
-app.use((req, res, next) => {
-  console.log("User middleware!");
-  next();
-});
-
 app.get("/", (req, res) => {
-  res.send("Hello world!");
+  res.render("articles", {});
 });
 
-app.get("/users", (req, res) => {
-  console.log(req.query);
-  res.send("Users!");
-});
+app.post("/articles", (req, res) => {
+  const topic = req.body.topics;
+  const count = req.body.count;
+  const language = req.body.language;
+  const page = language === ru ? pageRussian : pageSerbian;
 
-app.post("/users", (req, res) => {
-  console.log(req.body);
-  console.log(req.body.name ? req.body.name : null);
+  request(page, (err, response, body) => {
+    if (!err && response.statusCode === 200) {
+      const $ = cheerio.load(body);
 
-  console.log(req.test ? req.test : "Заголовок test не был передан");
+      const featuredArticle = {
+        topicName: $(".maindsc").find(".type").text(),
+        topic: getKeyByValue($(".maindsc").find(".type").text()),
+        title: $(".maindsc").find("h2").text(),
+        cover: $(".bigthumb").attr("src"),
+      };
 
-  res.send("Post method works!");
-});
+      const articles = [featuredArticle];
 
-//GET + params
-app.get("/users/:username", (req, res) => {
-  //console.log(req.params)
-  //res.send('GET + params works!')
+      $(".pitem").each(function (i, elem) {
+        if (i <= count) {
+          articles[i] = {
+            topicName: $(`.pitem:nth-child(${i})`).find(".type").text(),
+            topic: getKeyByValue(
+              $(`.pitem:nth-child(${i})`).find(".type").text()
+            ),
+            title: $(`.pitem:nth-child(${i})`).find(".ititle").text(),
+            cover: $(`.pitem:nth-child(${i})`).find("img").attr("src"),
+          };
+        }
+      });
 
-  const user = users[req.params.username]
-    ? users[req.params.username]
-    : users["anna"];
-  res.render("user", user);
-});
+      const resultArticles =
+        topic !== 10
+          ? articles.filter((article) => article.topic === topic)
+          : articles;
 
-//Для ДЗ
-app.post("/settings", (req, res) => {
-  console.log(req.body);
-  console.log(req.body.param1 ? req.body.param1 : 10);
-  res.render("user", {});
+      res.render("articles-assorted", {
+        articles: resultArticles,
+        topic,
+        count,
+        language: +language,
+      });
+    }
+  });
 });
 
 app.listen(4000, () => {

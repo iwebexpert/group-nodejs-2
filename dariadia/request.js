@@ -23,6 +23,6 @@ request(page, (err, response, body) => {
       };
     });
 
-    console.log(featuredArticle);
+    console.log([featuredArticle, ...articles]);
   }
 });
