@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/main.css"/>
+    <title>Document</title>
+</head>
+<body>
+    <form action="/news" method="POST">
+        <select name="newsType">
+            {{#each typesList }}
+                <option value="{{ this.id }}" {{ isSelected this.selected }}>
+                    {{ this.name }}
+                </option>
+            {{/each }}
+        </select>
+        <input type="number" name="newsCount" value="{{ newsCount }}" >
+        <button type="submit">Get news</button>
+    </form>
+
+
+    <div class="news__container">
+        {{#each newsData }}
+            <div class="container">
+                <img class="img" src="{{ this.img }}" alt="img"> 
+                <div class="content">
+                    <h3>{{ this.title }}</h3>
+                    <div>{{ this.body }}</div>  
+                </div> 
+            </div>
+        {{/each }}
+    </div>
+</body>
+</html>
