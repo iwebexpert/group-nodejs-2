@@ -22,7 +22,9 @@ app.engine('hbs', consolidate.handlebars );
 app.use( cookieParser() )
 app.use( express.json() );
 app.use( express.urlencoded( { extended: false } ) );
-app.use( express.static( `${ __dirname }/views/css` ) );
+app.use( 
+    express.static( path.resolve( __dirname, 'views','css') ) 
+);
 
 app.set( 'view engine', 'hbs' );
 app.set( 'views', path.resolve( __dirname, 'views') );
@@ -50,7 +52,7 @@ handlebars.registerHelper('isSelected', ( isSelected ) => {
  * @todo слишком много обязанностей у этого эндпоинта, придумать как поправить
  **/
 app.get( '/news', ( req, res ) => {
-  const cookieData = req.cookies[ FILTER_COOKIE ];
+  const cookieData = req.cookies[ FILTER_COOKIE ] || {};
   res.cookie( FILTER_COOKIE, cookieData );
 
   const { selectedType, newsCount } = getRequestFilter( req, cookieData );
