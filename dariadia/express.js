@@ -6,10 +6,13 @@ const cheerio = require("cheerio");
 const nodeCookie = require("node-cookie");
 
 const app = express();
-const pageRussian = "https://journal.bookmate.com/";
-const pageSerbian = "https://zurnal.bookmate.com/";
-const ru = 1;
-const sr = 0;
+const port = 4000;
+
+const pages = {
+  ru: "https://journal.bookmate.com/",
+  sr: "https://zurnal.bookmate.com/",
+};
+const dictionary = { ru: 1, sr: 0 };
 const legend = {
   1: ["Книги", "Knjige"],
   2: ["Тренды", "Trendovi"],
@@ -34,14 +37,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.render("articles", {});
+  const { count, topic, language } = nodeCookie.parse(req);
+  res.render("articles", { count, topic, language });
 });
 
 app.post("/articles", (req, res) => {
   const topic = +req.body.topics;
   const count = +req.body.count;
   const language = +req.body.language;
-  const page = language === ru ? pageRussian : pageSerbian;
+  const page = language === dictionary.ru ? pages.ru : pages.sr;
 
   nodeCookie.create(res, "topic", topic);
   nodeCookie.create(res, "count", count);
@@ -78,8 +82,6 @@ app.post("/articles", (req, res) => {
           ? articles.filter((article) => article.topic === topic)
           : articles;
 
-      console.log(resultArticles);
-
       res.render("articles-assorted", {
         articles: resultArticles,
         topic,
@@ -90,6 +92,6 @@ app.post("/articles", (req, res) => {
   });
 });
 
-app.listen(4000, () => {
-  console.log("The server has been started!");
+app.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`);
 });
