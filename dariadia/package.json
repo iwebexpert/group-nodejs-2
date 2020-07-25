@@ -17,6 +17,9 @@
     "usage": "^0.7.1",
     "cheerio": "^1.0.0-rc.3",
     "nodemailer": "^6.4.10",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "consolidate": "^0.15.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.6"
   }
 }
