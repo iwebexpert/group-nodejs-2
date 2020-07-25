@@ -3,6 +3,7 @@ const consolidate = require("consolidate");
 const path = require("path");
 const request = require("request");
 const cheerio = require("cheerio");
+//const nodeCookie = require("node-cookie");
 
 const app = express();
 const pageRussian = "https://journal.bookmate.com/";
@@ -19,7 +20,7 @@ const legend = {
 };
 
 const getKeyByValue = (topicName) => {
-  return Object.keys(legend).find((key) => legend[key].includes(topicName));
+  return +Object.keys(legend).find((key) => legend[key].includes(topicName));
 };
 
 app.engine("hbs", consolidate.handlebars);
@@ -38,8 +39,8 @@ app.get("/", (req, res) => {
 
 app.post("/articles", (req, res) => {
   const topic = +req.body.topics;
-  const count = req.body.count;
-  const language = req.body.language;
+  const count = +req.body.count;
+  const language = +req.body.language;
   const page = language === ru ? pageRussian : pageSerbian;
 
   request(page, (err, response, body) => {
@@ -72,6 +73,8 @@ app.post("/articles", (req, res) => {
         topic !== 10
           ? articles.filter((article) => article.topic === topic)
           : articles;
+
+      console.log(resultArticles);
 
       res.render("articles-assorted", {
         articles: resultArticles,
