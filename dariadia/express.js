@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/articles", (req, res) => {
-  const topic = req.body.topics;
+  const topic = +req.body.topics;
   const count = req.body.count;
   const language = req.body.language;
   const page = language === ru ? pageRussian : pageSerbian;
