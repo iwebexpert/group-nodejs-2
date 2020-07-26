@@ -65,25 +65,25 @@ app.post("/articles", (req, res) => {
       const articles = [featuredArticle];
 
       $(".pitem").each(function (i, elem) {
+        // Do not request more articles than the specified number
         if (i <= count) {
-          articles[i] = {
-            topicName: $(`.pitem:nth-child(${i})`).find(".type").text(),
-            topic: getKeyByValue(
-              $(`.pitem:nth-child(${i})`).find(".type").text()
-            ),
-            title: $(`.pitem:nth-child(${i})`).find(".ititle").text(),
-            cover: $(`.pitem:nth-child(${i})`).find("img").attr("src"),
-          };
+          let articleTopic = getKeyByValue(
+            $(`.pitem:nth-child(${i})`).find(".type").text()
+          );
+          // Do not request other data if not the requested topic
+          if (topic === 10 || topic === articleTopic) {
+            articles[i] = {
+              topicName: $(`.pitem:nth-child(${i})`).find(".type").text(),
+              topic: articleTopic,
+              title: $(`.pitem:nth-child(${i})`).find(".ititle").text(),
+              cover: $(`.pitem:nth-child(${i})`).find("img").attr("src"),
+            };
+          }
         }
       });
 
-      const resultArticles =
-        topic !== 10
-          ? articles.filter((article) => article.topic === topic)
-          : articles;
-
       res.render("articles-assorted", {
-        articles: resultArticles,
+        articles,
         topic,
         count,
         language: +language,
