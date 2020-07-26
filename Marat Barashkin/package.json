@@ -1,12 +1,14 @@
 {
   "name": "lesson1",
   "version": "1.0.0",
-  "description": "Group NodeJs-2 lesson1 homework",
+  "description": "Group NodeJs-2 lesson1,2 homework",
   "main": "index.js",
   "author": "sinstranger",
   "license": "MIT",
   "dependencies": {
     "beeper": "^2.0.0",
-    "chalk": "^4.1.0"
+    "chalk": "^4.1.0",
+    "cheerio": "^1.0.0-rc.3",
+    "request": "^2.88.2"
   }
 }
