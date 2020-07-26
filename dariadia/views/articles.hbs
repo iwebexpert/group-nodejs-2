@@ -1,12 +1,14 @@
 <h2>Читайте последние новости из книжного мира!</h2>
 {{#if count}}
-  <h6>В прошлый раз вы читали: {{count}} статей, на языке 
-    {{#if language}}
-      <span>русский</span>
-    {{else}}
-      <span>српски</span>
-    {{/if}},
-     тема номер {{topic}}</h6>
+  <h6>В прошлый раз вы читали: {{count}} статей, на языке
+    <i>
+      {{#if language}}
+        русский
+      {{else}}
+        српски
+      {{/if}}
+    </i>,
+    тема номер {{topic}}</h6>
 {{/if}}
 <form method="POST" action="/articles">
   <label for="topics">Выберите тему</label>
