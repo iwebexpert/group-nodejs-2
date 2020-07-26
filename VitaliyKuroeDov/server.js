@@ -20,7 +20,7 @@ Handlebars.registerHelper("list", (context, options) =>{
     return ret + "</ol>";
 } )
 
-const users = {
+let users = {
     oleg: {
         username: 'Oleg',
         age: 30,
@@ -56,6 +56,9 @@ app.set('view engine', 'hbs')
 app.set('views', path.resolve(__dirname, './views'))
 
 app.get('/', (req, res) => {
+    for (key in users) {
+        key.defaultNews = req.cookies[key]
+    }
     res.render('index')
 })
 
@@ -70,10 +73,11 @@ app.get('/users', (req, res) => {
 app.get('/users/:username', (req, res) => {
     const user = users[req.params.username] ? users[req.params.username] : users['irina']
     res.render('user', {user , news, id: req.params.username})
+    
 })
 
 app.post('/users/:username/news', (req, res, next) => {
-    const user = {username: req.body.username, countNews: req.body.newsCountDisplay ? req.body.newsCountDisplay : 10, news: {} }
+    const user = {username: req.body.username, countNews: req.body.newsCountDisplay ? req.body.newsCountDisplay : '15', news: {} }
     const userName = req.body.username
 
     res.cookie(`${userName}`, req.body.newsCountDisplay, {expires: new Date(Date.now() + 900000), httpOnly: true })
