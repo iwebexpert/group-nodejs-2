@@ -77,13 +77,15 @@ app.get('/users/:username', (req, res) => {
 })
 
 app.post('/users/:username/news', (req, res, next) => {
-    const user = {username: req.body.username, countNews: req.body.newsCountDisplay ? req.body.newsCountDisplay : '15', news: {} }
+    const user = {username: req.body.username, countNews: req.body.newsCountDisplay !== '' ? req.body.newsCountDisplay : '15', news: {} }
     const userName = req.body.username
-
-    res.cookie(`${userName}`, req.body.newsCountDisplay, {expires: new Date(Date.now() + 900000), httpOnly: true })
+    const userNews = req.body.newsCountDisplay !== '' ? req.body.newsCountDisplay : users[userName].defaultNews
+ 
+    res.cookie(`${userName}`, userNews, {expires: new Date(Date.now() + 900000), httpOnly: true })
 
     for (let i = 0; i < req.cookies[userName]; i++) {
         user.news = {...user.news, [i]: {title: news[i].title, link: news[i].link}}
+        
     }
     res.render('newsList', user)
 })
