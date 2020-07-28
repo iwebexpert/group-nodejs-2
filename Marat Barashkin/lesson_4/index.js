@@ -3,15 +3,7 @@ const { response } = require("express");
 /**
  * Подключаем зависимости
  */
-const [fs, request, path, express, consolidate, handlebars, cherrio] = [
-	require("fs"),
-	require("request"),
-	require("path"),
-	require("express"),
-	require("consolidate"),
-	require("handlebars"),
-	require("cheerio"),
-];
+const [fs, request, path, express, consolidate, handlebars, cherrio] = [require("fs"), require("request"), require("path"), require("express"), require("consolidate"), require("handlebars"), require("cheerio")];
 const app = express();
 /**
  * Шаблонизация
@@ -45,7 +37,14 @@ app.use(express.json());
  * Список новостей
  */
 const NEWS_URL = `https://journal.bookmate.com`;
-
+let newsCount = null;
+app.post("/", (req, res, next) => {
+	newsCount = req.body.newscount;
+	// TODO: Приходится с формы редиректить в ручную, даже если как action я укажу /newsfeed есть ли лучшее решение ? + тут ошибка в консоли - как избежать
+	res.redirect("/newsfeed");
+	// res.send(''); не делать next или send что-ли, как-то это не нравится
+	// next(); не делать next или send что-ли, как-то это не нравится
+});
 /**
  * Главная страница
  */
@@ -59,17 +58,24 @@ app.get("/", (req, res) => {
 app.get("/newsfeed", (req, res) => {
 	request(NEWS_URL, (err, response, body) => {
 		if (!err && response.statusCode === 200) {
-         const $ = cherrio.load(body);
-         // TODO: Возможно есть более изящный способ собрать newsItems
+			const $ = cherrio.load(body);
+			// TODO: Возможно есть более изящный способ собрать newsItems
 			let newsItems = [];
 			$(".pitem").each((index, item) => {
+				/**
+				 * Если число новостей больше введенного числа - прекращаем их собирать
+				 */
+				if (newsCount && index >= newsCount) {
+					return false;
+				}
 				newsItems[index] = {
-					srcimage: $(item).find("img").attr("src"),
+					// TODO: Не ясно почему test false в любом случае
+					srcimage: /'^https?.*'/i.test($(item).find("img").attr("src")) ? $(item).find("img").attr("src") : NEWS_URL + $(item).find("img").attr("src"),
 					title: $(item).find(".ititle").text(),
 					detailLink: NEWS_URL + $(item).attr("href"),
 				};
-         });
-			res.render("newsfeed", { documentTitle: "Список новостей", pagetitle: "Новости", news: newsItems, });
+			});
+			res.render("newsfeed", { documentTitle: "Список новостей", pagetitle: "Новости", news: newsItems });
 		}
 	});
 });

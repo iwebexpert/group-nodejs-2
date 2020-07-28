@@ -1,5 +1,14 @@
 {{> header }}
 <div class="container-fluid">
    <h1 class="center">{{pagetitle}}</h1>
+   <form method="POST">
+      <div class="form-group">
+         <label for="exampleInputEmail1" action='/'>Число новостей</label>
+         <input type="text" name="newscount" class="form-control" id="exampleInputТуцы" aria-describedby="#"
+            placeholder="Введите необходимое колличество новостей для показа">
+         <small id="emailHelp" class="form-text text-muted">Введите необходимое колличество новостей для показа</small>
+      </div>
+      <input type="submit" class="btn btn-primary" value="Отправить">
+   </form>
 </div>
 {{> footer }}
