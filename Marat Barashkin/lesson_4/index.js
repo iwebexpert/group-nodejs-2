@@ -69,8 +69,7 @@ app.get("/newsfeed", (req, res) => {
 					return false;
 				}
 				newsItems[index] = {
-					// TODO: Не ясно почему test false в любом случае
-					srcimage: /'^https?.*'/i.test($(item).find("img").attr("src")) ? $(item).find("img").attr("src") : NEWS_URL + $(item).find("img").attr("src"),
+					srcimage: /^https?.*/i.test($(item).find("img").attr("src")) ? $(item).find("img").attr("src") : NEWS_URL + $(item).find("img").attr("src"),
 					title: $(item).find(".ititle").text(),
 					detailLink: NEWS_URL + $(item).attr("href"),
 				};
