@@ -1,8 +1,7 @@
 const express = require("express");
 const consolidate = require("consolidate");
 const path = require("path");
-const request = require("request");
-const cheerio = require("cheerio");
+const news = require("../Lesson 3/getNews");
 
 const app = express();
 const port = 4000;
@@ -24,34 +23,21 @@ app.set("view engine", "hbs"); // Какое расширение исп-ем
 app.set("views", path.resolve(__dirname, "views")); // Путь к шаблону
 
 app.get("/users/:id", (req, res) => {
-  const user = users[req.params.id];
+  const user = users[req.params.id] ? users[req.params.id] : users[1];
   console.log(user);
-  if (user ? user : "1") res.render("user", user);
+  const mainNews = news.mainNews;
+  const secondaryNews = news.secondaryNews;
+  res.render("user", { user, mainNews, secondaryNews }, (err, html) => {
+    res.send(html);
+  });
+});
+
+app.post("/news", (req, res) => {
+  console.log(req.body);
+  // console.log(req.body.param1);
+  res.render("user", {});
 });
 
 app.listen(port, () => {
   console.log(`Server is running on Port: ${port}!`);
-});
-
-request("https://rg.ru/", (err, res, body) => {
-  if (!err && res.statusCode === 200) {
-    const $ = cheerio.load(body);
-    const mainNews = $("div.b-news__list-item")
-      .find("h2")
-      .find("a")
-      .map((i, el) => $(el).text())
-      .get()
-      .join("\n");
-
-    console.log(mainNews);
-
-    const secondaryNews = $("div.b-news-inner__list-item-wrapper")
-      .find("h2")
-      .find("a")
-      .map((i, el) => $(el).text())
-      .get()
-      .join("\n");
-
-    console.log(secondaryNews);
-  }
 });
