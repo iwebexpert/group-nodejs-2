@@ -1,0 +1,13 @@
+<div>
+    <h1>Имя пользователя: {{ userName }}</h1>
+    {{#if age}}
+    <div>Возраст: {{ age }} </div>
+    {{/if}}
+
+    <ol>
+        {{#each skills}}
+        <li> {{this}} </li>
+        {{/each}}
+    </ol>
+
+</div>

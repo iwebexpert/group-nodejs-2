@@ -105,3 +105,5 @@ dist
 
 # IDE
 .idea/
+
+.DS_Store
