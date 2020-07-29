@@ -1,0 +1,60 @@
+<style>
+    label {
+        display: block;
+    }
+
+    .news {
+        margin: 20px 0;
+    }
+
+    .news_item {
+        margin-bottom: 15px;
+    }
+
+   .news_item-date {
+        font-size: 12px;
+        color: grey;
+   }
+
+   .news_item-title {
+        margin-bottom: 3px;
+        font-size: 16px;
+        font-weight: 600;
+   }
+</style>
+<form action="/news" method="post">
+    <label>Категория
+        <select name="category">
+            <option value="auto">Авто</option>
+            <option value="world">В мире</option>
+            <option value="gadgets">Гаджеты</option>
+            <option value="sport">Спорт</option>
+            <option value="football">Футбол</option>
+            <option value="hockey">Хоккей</option>
+            <option value="science">Наука</option>
+            <option value="society">Общество</option>
+            <option value="health">Здоровье</option>
+            <option value="politics">Политика</option>
+        </select>
+    </label>
+    <label>Количество новостей
+        <select name="count">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+        </select>
+    </label>
+    <input type="submit" value="Показать">
+</form>
+
+{{#if news}}
+<div class="news">
+    {{#each news}}
+    <div class="news_item">
+        <div class="news_item-date">{{this.date}}</div>
+        <div class="news_item-title">{{{this.title}}}</div>
+        <div class="news_item-description">{{{this.description}}}</div>
+    </div>
+    {{/each}}
+</div>
+{{/if}}
