@@ -1,0 +1,31 @@
+nav {
+    background-color: khaki;
+    height: 30px;
+}
+
+.nav-menu {
+    list-style-type: none;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100px;
+    padding: 0;
+}
+
+.nav-menu li {
+    display: inline;
+}
+
+h1 {
+    text-align: center;
+}
+
+.settings-form {
+    border: 1px solid black;
+    display: inline-block;
+}
+
+.settings-form * {
+    margin: 10px;
+}
