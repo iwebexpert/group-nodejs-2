@@ -1,0 +1,16 @@
+<div>
+  {{#if tasks}}
+    <h1>Все задачи</h1>
+  {{else}}
+    <h1>Нет задач</h1>
+  {{/if}}
+  <ol>
+    {{#each task}}
+    <li>
+      {{this.title}} : {{this.status}}
+      <br />
+      Priority: {{this.priority}}
+    </li>
+    {{/each}}
+  </ol>
+</div>
