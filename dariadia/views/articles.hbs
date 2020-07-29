@@ -1,0 +1,39 @@
+<h2>Читайте последние новости из книжного мира!</h2>
+{{#if count}}
+  <h6>В прошлый раз вы читали: {{count}} статей, на языке
+    <i>
+      {{#if language}}
+        русский
+      {{else}}
+        српски
+      {{/if}}
+    </i>,
+    тема номер {{topic}}</h6>
+{{/if}}
+<form method="POST" action="/articles">
+  <label for="topics">Выберите тему</label>
+  <select name="topics" id="topics">
+    <option value="1">Книги</option>
+    <option value="2">Тренды</option>
+    <option value="3">Интервью</option>
+    <option value="4">Писатели</option>
+    <option value="5">Истории</option>
+    <option value="6">Букмейт</option>
+    <option value="10">Все</option>
+  </select>
+
+  <label for="topics">Новостей на 1 странице</label>
+  <select name="count" id="count">
+    <option value="5">5</option>
+    <option value="10">10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+  </select>
+
+  <label for="language">Язык</label>
+  <select name="language" id="language">
+    <option value="1">Русский</option>
+    <option value="0">Српски</option>
+  </select>
+  <input type="submit">
+</form>
