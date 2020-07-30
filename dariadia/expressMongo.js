@@ -24,7 +24,7 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.render("Hello world!")
+  res.send("Hello world!")
 });
 
 app.get('/tasks', async (req, res) => {
