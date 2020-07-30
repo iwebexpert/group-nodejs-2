@@ -1,0 +1,35 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    margin: 0 auto;
+}
+input, button {
+    padding: 5px;
+    margin: 5px 0;
+}
+.container {
+    margin: 0 auto;
+    width: 75vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.card {
+    border: 1px solid black;
+    padding: 35px;
+    margin: 5px;
+    width: 44%;
+}
+img {
+    margin: 25px;
+    float: left;
+}
+h4 {
+    text-align: center;
+    padding: 5px;
+}
+p {
+    text-align: justify;
+    padding: 5px;
+}
