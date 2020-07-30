@@ -1,16 +1,50 @@
-<div>
-  {{#if tasks}}
-    <h1>Все задачи</h1>
-  {{else}}
-    <h1>Нет задач</h1>
-  {{/if}}
-  <ol>
-    {{#each task}}
-    <li>
-      {{this.title}} : {{this.status}}
-      <br />
-      Priority: {{this.priority}}
-    </li>
-    {{/each}}
-  </ol>
+<div style="display: flex;flex-direction: row;justify-content: space-evenly;align-items: baseline;">
+    <div>
+    {{#if tasks}}
+      <h1>All tasks</h1>
+    {{else}}
+      <h1>You have no tasks!</h1>
+    {{/if}}
+    <ol>
+      {{#each tasks}}
+      <li style="padding: 10px;">
+        <span><b>{{this.title}}</b> : {{this.status}}</span>
+        <br />
+        <br />
+        <span style="">Priority: 
+          {{#if this.priorityID}}
+            <span style="color: white;background: red;padding: 5px;border-radius: 20px;">{{this.priority}}</span>
+          {{else}}
+            <span style="color: white;background: green;padding: 5px;border-radius: 20px;">{{this.priority}}</span>
+          {{/if}}
+        </span>
+      </li>
+      {{/each}}
+    </ol>
+  </div>
+
+  <div style="background: aliceblue;padding: 20px;-webkit-box-shadow: 10px 10px 5px 0px rgba(185,197,199,1);-moz-box-shadow: 10px 10px 5px 0px rgba(185,197,199,1);box-shadow: 10px 10px 5px 0px rgba(185,197,199,1);">
+    <form method="POST" action="/tasks">
+      <input type="text" name="title" placeholder="enter task title" >
+
+      <label for="priority">Set priority</label>
+      <select name="priority" id="priority">
+        <option value="minor">minor</option>
+        <option value="normal" selected>normal</option>
+        <option value="high">high</option>
+      </select>
+
+      <label for="status">Set status</label>
+      <select name="status" id="status">
+        <option value="to do">To do</option>
+        <option value="in progress">In progress</option>
+        <option value="Code review">Code review</option>
+        <option value="Ready for testing">Ready for testing</option>
+        <option value="Ready for deploy">Ready for deploy</option>
+        <option value="Done">Done</option>
+      </select>
+      <input type="submit">
+    </form>
+  </div>
+
 </div>

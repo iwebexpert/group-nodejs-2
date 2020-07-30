@@ -24,21 +24,28 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.render("Hello world!");
+  res.render("Hello world!")
 });
 
 app.get('/tasks', async (req, res) => {
-  const tasks = await taskMongoose.find({})
-  res.json(tasks)
-  // const result = {tasks: tasks}
-  // console.log(result)
-  // res.render("tasks", {result});
+  const tasksHelper = await taskMongoose.find({})
+  const tasks = []; // We have to do sth, because of this error: "Handlebars: Access has been denied to resolve the property "title" because it is not an "own property" of its parent." It's easy to just reassemble another array of objects.
+  for (let i of tasksHelper) {
+    tasks.push({
+      title: i.title, 
+      status: i.status, 
+      priority: i.priority, 
+      priorityKey: i.priority === 'normal' ? 0 : 1, // Helps to colour the "priority" elements because handlebars doesn't handle conditioning rather than exists/not (aka 0, null – 1, 'string')
+      id: i._id 
+    })
+  }
+  res.render("tasks", {tasks})
 })
 
 app.post('/tasks', async (req, res) => {
   const task = new taskMongoose(req.body)
   const isSaved = await task.save()
-  res.json(isSaved)
+  res.redirect('/tasks')
 })
 
 app.listen(config.webPort, () => {
