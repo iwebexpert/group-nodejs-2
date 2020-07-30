@@ -1,0 +1,11 @@
+
+<form method="POST" action="/users/{{id}}/news">
+    <label for="username"><h1>Пользователь: {{user.username}}</h1></label>
+    <input type="text" readonly name="username" value="{{id}}" style="display: none;">
+    <span>Список новстей по умолчанию: {{user.defaultNews}}</span>
+    <input type="number" name="newsCountDisplay" placeholder="введите количество отображаемых сообщений">
+    <input type="submit" value="Жмак">
+</form>
+
+<a href="/users">Список пользователей</a>
+<a href="/">На главную</a>

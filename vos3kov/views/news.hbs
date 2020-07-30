@@ -1,0 +1,15 @@
+<h2>Выберите количество (max=10)</h2>
+<form method="POST" action="/settings">
+    <input type="text" name="count" placeholder="{{count}}">
+    <input type="submit">
+</form>
+
+<div>
+    <h1>Новости c Яндекса</h1>
+    <ol>
+        {{#each renderNews}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ol>
+</div>
+

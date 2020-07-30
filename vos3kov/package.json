@@ -1,0 +1,24 @@
+{
+  "name": "vos3kov",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vostrikov_Pavel",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "colors": "^1.4.0",
+    "consolidate": "^0.15.1",
+    "cookie": "^0.4.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.6",
+    "jzz": "^1.0.8",
+    "minimist": "^1.2.5",
+    "readline": "^1.3.0",
+    "request": "^2.88.2",
+    "url": "^0.11.0"
+  }
+}

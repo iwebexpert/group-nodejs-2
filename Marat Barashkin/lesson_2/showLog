@@ -1,0 +1,12 @@
+const fs = require('fs')
+module.exports = log => {
+    let logData = fs.readFileSync(log);
+    console.log(
+        `Последнее выпадение: ${log.WhoWined === 1 ? `Орел` : `Решка`}\n`,
+        `Орел выпал:  ${logData.FirstPlayerWins} раз\n`,
+        `Решка выпала: ${logData.SecondPlayerWins} раз\n`,
+        `Всего выпадений: ${logData.RoundsCount}\n`,
+        `Орел выпал подряд: ${logData.FirstPlayerWinsInLine} раз\n`,
+        `Решка выпала подряд: ${logData.SecondPlayerWinsInLine} раз\n`
+    );
+}
