@@ -35,7 +35,7 @@ app.get('/tasks', async (req, res) => {
       title: i.title, 
       status: i.status, 
       priority: i.priority, 
-      priorityKey: i.priority === 'normal' ? 0 : 1, // Helps to colour the "priority" elements because handlebars doesn't handle conditioning rather than exists/not (aka 0, null – 1, 'string')
+      priorityKey: i.priority === 'high' ? 1 : 0, // Helps to colour the "priority" elements because handlebars doesn't handle conditioning rather than exists/not (aka 0, null – 1, 'string')
       id: i._id 
     })
   }
@@ -44,7 +44,7 @@ app.get('/tasks', async (req, res) => {
 
 app.post('/tasks', async (req, res) => {
   const task = new taskMongoose(req.body)
-  const isSaved = await task.save()
+  await task.save()
   res.redirect('/tasks')
 })
 
