@@ -48,6 +48,43 @@ app.post('/tasks', async (req, res) => {
   res.redirect('/tasks')
 })
 
+app.put('/tasks', async (req, res) => {
+  if(!req.body) return res.sendStatus(400)
+  const { id, title, status, priority } = req.body
+  const task = await taskMongoose.findById( id )
+
+  const updatedTask = { 
+    title: title ? title : task.title,
+    status: status ? status : task.status, 
+    priority: priority ? priority : task.priority, 
+  }
+     
+  taskMongoose.updateOne({_id: id}, updatedTask, {new: true}, function(err, task){
+    if(err) return console.log(err)
+  })
+  
+  res.redirect('/tasks')
+})
+
+app.delete('/tasks', async ( req, res ) => {
+  if(!req.body) return res.sendStatus(400)
+
+  await taskMongoose.findByIdAndDelete({_id: req.body.id}, function(err, task){
+    if(err) return console.log(err)
+  })
+
+  res.redirect('/tasks')
+});
+
+app.post('/tasks', async (req, res) => {
+  if(!req.body) return res.sendStatus(400)
+
+  const task = new taskMongoose(req.body)
+  await task.save()
+
+  res.redirect('/tasks')
+})
+
 app.listen(config.webPort, () => {
   console.log('The server has been started!')
 })
