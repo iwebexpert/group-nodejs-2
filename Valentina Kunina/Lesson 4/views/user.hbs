@@ -1,13 +1,46 @@
-<div>
-    <h1>Имя пользователя: {{ userName }}</h1>
-    {{#if age}}
-    <div>Возраст: {{ age }} </div>
-    {{/if}}
+<!DOCTYPE html>
+<html lang="en">
 
-    <ol>
-        {{#each skills}}
-        <li> {{this}} </li>
-        {{/each}}
-    </ol>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css" type="text/css">
+    <style>
+        .news {
+            list-style-type: none;
+        }
+    </style>
+    <title>HandleBars</title>
+</head>
 
-</div>
+<body>
+
+    <div>
+        <h1>Имя пользователя: {{ userName }}</h1>
+        {{#if age}}
+        <div>Возраст: {{ age }} </div>
+        {{/if}}
+
+        <ol>
+            {{#each skills}}
+            <li> {{this}} </li>
+            {{/each}}
+        </ol>
+        <h2>Сколько новостей Вы хотели бы посмотреть:</h2>
+        <form method="POST" action="/news">
+            <input type="text" name="count"
+                placeholder="кол-во новостей на одной странице">
+            <input type="submit">
+        </form>
+
+        <h2>Подборка новостей</h2>
+        <ul>
+            {{#each mainNews }}
+            <li class="news"> {{this}} </li>
+            {{/each}}
+        </ul>
+
+    </div>
+</body>
+
+</html>
