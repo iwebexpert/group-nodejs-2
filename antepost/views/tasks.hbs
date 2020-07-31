@@ -1,0 +1,18 @@
+<h1>You have following tasks</h1>
+
+<div>
+    <ul>
+        {{#if tasks}}
+        {{#each tasks}}
+        <li>
+            <a href="/tasks/{{_id}}">{{this.title}}</a>, completed: {{this.completed}}
+        </li>
+        {{/each}}
+        {{else}}
+        <p>There are no tasks. Create one!</p>
+        {{/if}}
+    </ul>
+</div>
+
+<h2>Create new task</h2>
+{{> tasks_form}}
