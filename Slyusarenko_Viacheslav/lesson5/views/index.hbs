@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="/scripts/script.js" defer ></script>
+    <title>Document</title>
+</head>
+<body>
+
+<form action="/tasks" method="POST">
+    <input type="text" name="title">
+    <button type="submit">Add Task</button>
+</form>
+
+<div class="tasks__container">
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>is Completed</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each tasks }}
+            <tr>
+                <td>{{ title }}</td>
+                <td>
+                    {{ checkBox _id completed }}
+                <td>
+                    <button data-mode="update" class="btn_update" data-href="/tasks/update/{{ _id }}">Update</button>
+                    <button data-mode="delete" class="btn_delete" data-id="{{ _id }}">Delete</button>
+                </td>
+            </tr>
+        {{/each }}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
