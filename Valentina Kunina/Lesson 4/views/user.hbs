@@ -26,25 +26,19 @@
             <li> {{this}} </li>
             {{/each}}
         </ol>
-
-        <h2>Подборка новостей</h2>
-        <h3>Основные новости:</h3>
-        <ul>
-            {{#each mainNews }}
-            <li class="news"> {{this}} </li>
-            {{/each}}
-        </ul>
-        <h3>Дополнительные новости:</h3>
-        <ul>
-            {{#each secondaryNews }}
-            <li class="news"> {{this}} </li>
-            {{/each}}
-        </ul>
+        <h2>Сколько новостей Вы хотели бы посмотреть:</h2>
         <form method="POST" action="/news">
             <input type="text" name="count"
                 placeholder="кол-во новостей на одной странице">
             <input type="submit">
         </form>
+
+        <h2>Подборка новостей</h2>
+        <ul>
+            {{#each mainNews }}
+            <li class="news"> {{this}} </li>
+            {{/each}}
+        </ul>
 
     </div>
 </body>

@@ -1,12 +1,12 @@
 const request = require("request");
 const cheerio = require("cheerio");
 
-request("https://rg.ru/", (err, res, body) => {
+request("https://rg.ru/news.html", (err, res, body) => {
   if (!err && res.statusCode === 200) {
     const $ = cheerio.load(body);
     const arrayMainNews = [];
-    const arraySecondaryNews = [];
-    const mainNews = $("div.b-news__list-item")
+    // const arraySecondaryNews = [];
+    const mainNews = $("div.b-news-inner__list-item-wrapper")
       .find("h2")
       .find("a")
       .map((i, el) => {
@@ -19,17 +19,17 @@ request("https://rg.ru/", (err, res, body) => {
 
     console.log(arrayMainNews);
 
-    secondaryNews = $("div.b-news-inner__list-item-wrapper")
-      .find("h2")
-      .find("a")
-      .map((i, el) => {
-        let element = $(el).text().trim();
-        return (arraySecondaryNews[i] = element);
-      })
-      .get();
+    // secondaryNews = $("div.b-news-inner__list-item-wrapper")
+    //   .find("h2")
+    //   .find("a")
+    //   .map((i, el) => {
+    //     let element = $(el).text().trim();
+    //     return (arraySecondaryNews[i] = element);
+    //   })
+    //   .get();
 
-    module.exports.secondaryNews = arraySecondaryNews;
+    // module.exports.secondaryNews = arraySecondaryNews;
 
-    console.log(arraySecondaryNews);
+    // console.log(arraySecondaryNews);
   }
 });

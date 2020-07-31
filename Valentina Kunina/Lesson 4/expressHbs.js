@@ -26,16 +26,21 @@ app.get("/users/:id", (req, res) => {
   const user = users[req.params.id] ? users[req.params.id] : users[1];
   console.log(user);
   const mainNews = news.mainNews;
-  const secondaryNews = news.secondaryNews;
-  res.render("user", { user, mainNews, secondaryNews }, (err, html) => {
+  res.render("user", { ...user, mainNews }, (err, html) => {
+    console.log(mainNews);
     res.send(html);
   });
 });
 
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.post("/news", (req, res) => {
-  console.log(req.body);
-  // console.log(req.body.param1);
-  res.render("user", {});
+  const quantityNews = req.body.count ? req.body.count : 10;
+  console.log(req.body.count ? req.body.count : 10);
+  const mainNews = news.mainNews;
+  const sortedNews = mainNews.slice(0, quantityNews);
+  res.render("news", { quantityNews, sortedNews });
 });
 
 app.listen(port, () => {
