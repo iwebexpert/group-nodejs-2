@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Document</title>
+</head>
+<body>
+    
+        <form class="form-container" action="http://localhost:3000/news" method="POST">
+            <label for="title">Title</label>
+            <input type="checkbox" name="title" {{#if options.title}} checked {{/if}}>
+            <label for="body">Body</label>
+            <input type="checkbox" name="body" {{#if options.body}} checked {{/if}}>
+            <label for="image">Image</label>
+            <input type="checkbox" name="image" {{#if options.image}} checked {{/if}}>
+            <label for="count">How many news to show</label>
+            <input type="number" name="count" {{#if options.count}} value={{options.count}} {{/if}}>
+            <button>Go!</button>   
+        </form>
+    
+    <div class="container">
+    {{#each news}}
+        <div class="card">
+            <img src={{this.image}} alt={{this.id}}>
+            <div class="content">
+                <h4>{{this.title}}</h4>
+                <p>{{this.body}}</p>
+            </div>
+        </div>
+    {{/each}}
+</div>
+</body>
+</html>
+
