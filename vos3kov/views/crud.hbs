@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <title>Document</title>
+</head>
+<body>
+<div>
+    <h1>Список дел</h1>
+    {{#if tasks}}
+        <ol>
+            {{#each tasks}}
+                <li>Необходимо выполнить {{this.title}},
+                    <i>Приоритет: {{this.priority}}</i>
+                    <div style="display: inline-flex; ">
+                        <form action="/edit/{{this._id}}">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="las la-highlighter" style="font-size: 22px;"></i> Редактировать
+                            </button>
+                        </form>
+                        <form method="POST" action="/delete/{{this._id}}">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="lar la-trash-alt" style="font-size: 22px;"></i> Удалить
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            {{/each}}
+        </ol>
+    {{else}}
+        На данный момент пуст!
+    {{/if}}
+
+    <h2>Добавить задачу</h2>
+    <form method="POST" action="/add">
+        <input type="text" name="title" placeholder="{{title}}">
+        <input type="number" name="priority" placeholder="{{priority}}">
+
+        <button type="submit" class="btn btn-success"><i class="lar la-plus-square" style="font-size: 22px;"></i>
+            Добавить
+        </button>
+    </form>
+
+
+</div>
+</body>
+</html>
+
+
