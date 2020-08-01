@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks</title>
+</head>
+<body>
+    
+<a href="/tasks">Tasks</a>
+<a href="/tasks/add">Add Tasks</a>
+
+<div>
+    {{#if tasks}}
+    {{#each tasks}}
+    <div style="display: flex; justify-content:space-around">
+    <h4>{{this.title}}</h4>
+    <p>{{this.completed}}</p>
+    <p>{{this._id}}</p>
+    <a href="/tasks/add/{{this._id}}">Update</a>
+    <form action="/tasks/delete" method="POST">
+        <input type="hidden" name="_id" value="{{this._id}}">
+        <button>Delete</button>
+    </form>
+    </div>
+    {{/each}}
+    {{/if}}
+</div>
+</body>
+</html>
