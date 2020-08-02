@@ -10,13 +10,11 @@
     <ol>
       {{#each tasks}}
       <li style="padding: 10px;">
-        <a style="text-decoration: none;color:black;" href="/tasks/{{this.id}}">
-          <span><b>{{this.title}}</b> : {{this.status}}</span>
-        </a>
+        <span><b>{{this.title}}</b> : {{this.status}}</span>
         <span style="color: grey;">id: {{this.id}}</span>
         <br />
         <br />
-        <span style="">Priority: 
+        <span>Priority: 
           {{#if this.priorityKey}}
             <span style="color: white;background: red;padding: 5px;border-radius: 20px;">{{this.priority}}</span>
           {{else}}
