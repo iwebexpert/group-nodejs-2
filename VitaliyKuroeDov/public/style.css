@@ -2,6 +2,46 @@ body{
     margin: 0 auto;
 }
 
+.header{
+    display: flex;
+    padding: 1rem 2rem;
+}
+
+.title{
+
+}
+
+.navigation{
+    display: flex;
+    justify-content: space-between;
+}
+
+.link__item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .5rem .7rem;
+    border: 1px solid #000;
+    outline: none;
+    border-radius: 5px;
+    color: #000;
+    text-decoration: none;
+    transition: color .3s ease-in-out,
+                background-color .3s ease-in-out,
+                opacity .3s ease-in-out,
+                border .3s ease-in-out;
+}
+
+.link__item:hover{
+    background-color: #000;
+    color: #fff;
+
+}
+
+.link__item:active{
+    opacity: .67;
+}
+
 .container{
     margin: 1rem 2rem;
 }
@@ -35,6 +75,7 @@ body{
     flex-grow: 1;
     margin: 0 1rem 0 0;
 }
+
 
 .task-form__text{
     margin: 0 .5rem 0 0;
@@ -90,10 +131,9 @@ body{
     margin: 0 .7rem 1rem 0;
 }
 
-
-/* .card:active .card__checkbox{
-    display: none;
-} */
+.card * {
+    cursor: pointer;
+}
 
 .checkbox__label{
     display: flex;
@@ -109,20 +149,46 @@ body{
     position: absolute;
 }
 
-.card__checkbox::after{
-    
-}
-
 .card__checkbox:checked ~ .card__checkbox {
     background-color: yellow;
 }
 
 .card__checkbox:not(:checked) ~ .card-footer > .card-button{
+    opacity: 0;
+}
+
+.card__checkbox:checked ~ .card-footer > .card-button{
+    border-color: #fff;
+}
+
+.card__checkbox:checked ~ .card__item{
+    color: #fff;
+}
+
+.card__checkbox:checked ~ .card-footer > .card-button,
+.card__checkbox:checked ~ .fader::after{
     opacity: 1;
+    background-color: #000;
+    color: #fff;
+}
+
+.fader::after{
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    background-color: tomato; 
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
 }
 
 .card__item{
     margin: 0 0 .5rem 0;
+    z-index: 2;
 }
 
 .card__item:last-child{

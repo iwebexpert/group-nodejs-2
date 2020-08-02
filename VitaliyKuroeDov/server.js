@@ -120,7 +120,6 @@ app.put('/tasks', async (req, res) => {
     if(req.body._id) {
         const searchTask = await taskMongoose.findById(req.body._id)
         const status = !searchTask.complited 
-        console.log(status)
 
         searchTask.set( 'complited', status )
         searchTask.save()
@@ -133,7 +132,6 @@ app.delete('/tasks', async (req, res) => {
     if(req.body._id) {
         const delTasks = await taskMongoose.findByIdAndDelete(req.body)
         const tasksList = await taskMongoose.find(req.body).lean()
-        console.log(tasksList)
 
         if (tasksList.length <= 0 ) {
             res.send({status: 'ok'})
