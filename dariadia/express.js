@@ -106,13 +106,6 @@ app.post("/tasks/update", async (req, res) => {
   res.redirect("/tasks");
 });
 
-app.get("/tasks/:id", async (req, res) => {
-  if (!req.body) return res.sendStatus(400);
-  const { id } = req.params;
-  const task = await taskModel.findById(id);
-  res.render("task", task);
-});
-
 //Registration/Auth
 app.get("/register", (req, res) => {
   res.render("register");
