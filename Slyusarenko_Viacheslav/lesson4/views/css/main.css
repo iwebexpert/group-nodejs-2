@@ -1,0 +1,21 @@
+input {
+    padding: 4px;
+}
+select {
+    padding: 5px;
+}
+button {
+    padding: 4px 12px;
+}
+.container {
+    display: flex;
+    border: 6px solid #ddd;
+    margin: 10px;
+} 
+.img {
+    width: 250px;
+    height: 250px;
+}
+.content {
+    padding: 10px;
+} 

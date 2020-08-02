@@ -1,0 +1,15 @@
+<h2>Settings</h2>
+<form action="/settings" method="post" class="settings-form">
+    <label for="website">Choose a website to show news from:</label>
+    <select name="website" id="website">
+        {{#each possibleWebsitesToParse}}
+        <option value={{this}}>{{this}}</option>
+        {{/each}}
+    </select>
+    <br>
+
+    <label for="items-number">How many news items to show:</label>
+    <input type="text" name="items-number" id="number">
+    <br>
+    <input type="submit">
+</form>

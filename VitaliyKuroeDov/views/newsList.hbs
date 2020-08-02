@@ -1,0 +1,14 @@
+<div>   
+    <h1>Пользователь: {{username}}</h1>
+    {{#if newsCountDisplay}}
+        <span>Текущее количество отображаемых новостей: {{newsCountDisplay}}</span>
+    {{/if}}
+
+    <h3>Список новостей</h3>
+       
+    {{#list news}}
+        <a href="{{link}}">{{title}}</a> 
+    {{/list}}
+</div>
+<a href="/users/{{username}}">Назад</a>
+<a href="/">На главную</a>
