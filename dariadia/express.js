@@ -4,6 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
+const nodeCookie = require("node-cookie");
 const config = require("./config");
 
 const app = express();
@@ -125,10 +126,22 @@ app.post("/register", async (req, res) => {
 
 app.get("/auth", (req, res) => {
   const { error } = req.query;
-  res.render("auth", { error });
+  const { email } = nodeCookie.parse(req);
+  res.render("auth", {
+    error,
+    email,
+  });
 });
 
-app.post("/auth", passport.authenticate);
+app.post("/auth", (req, res) => {
+  const { rememberMe, email } = req.body;
+
+  rememberMe === "on"
+    ? nodeCookie.create(res, "email", email)
+    : nodeCookie.clear(res, "email");
+
+  passport.authenticate(req, res);
+});
 
 app.get("/logout", (req, res) => {
   req.logout();
