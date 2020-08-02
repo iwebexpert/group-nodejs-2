@@ -9,8 +9,7 @@ const userSchema = new Schema({
   email: {type: String, required: true},
   firstName: {type: String},
   lastName: {type: String},
-  password: {type: String, required: true},
-  githubId: { type: String }
+  password: {type: String, required: true}
 });
 
 userSchema.pre('save', function(next){
