@@ -1,0 +1,32 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+
+<section class="container">
+    <h2>TaskList</h2>
+     <form action="/tasks" method="POST" class="task-form">
+        <label for="" class="task-form__label">
+            <span class="task-form__text">Имя задачи: </span>
+            <input class="task-form__input" type="text" name="title" id="">
+        </label>
+        <input class="task-form__button" type="submit" name="" id="" value="Send">
+    </form>
+    <div class="card-list">
+        {{#each tasksList }} 
+            <div class="card">
+                <label class="checkbox__label">
+                    <input type="checkbox" class="card__checkbox">
+                    <span class="card__item card__id">ID: {{this._id}}</span>
+                    <span class="card__item card__title">Title: {{this.title}}</span>
+                    <span class="card__item card__text">Status: {{this.complited}}</span>
+                    <div class="card__item card-footer">
+                        <button type="submit" class="card-button" id="update" onclick="updateRecord(`{{this._id}}`)" >Update</button>
+                        <button type="submit" class="card-button" id="delete" onclick="deleteRecord(`{{this._id}}`)" >Delete</button>
+                    </div>
+                </label>
+            </div>
+        {{/each}}
+    </div>
+</section>
+<script src="script.js"></script>

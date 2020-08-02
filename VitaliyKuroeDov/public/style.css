@@ -1,0 +1,181 @@
+body{
+    margin: 0 auto;
+}
+
+.container{
+    margin: 1rem 2rem;
+}
+
+.list{
+    margin: 0;
+    padding: 0;
+}
+
+.list__item{
+    margin: 0 0 .5rem 0;
+}
+
+.list__item:last-child{
+    margin: 0 0 0 0;
+}
+
+.task-form{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+
+.task-form__label{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    margin: 0 1rem 0 0;
+}
+
+.task-form__text{
+    margin: 0 .5rem 0 0;
+}
+
+.task-form__input{
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: .5rem 1.5rem;
+    background-color: transparent;
+    flex-grow: 1;
+    transition: border-radius .3s ease-in-out;
+}
+
+.task-form__input:focus{
+    border-radius: 5px;
+}
+
+.task-form__button{
+    background: transparent;
+    display: flex;
+    padding: .5rem 1.5rem;
+    border: 1px solid #000;
+    border-radius: 5px;
+    outline: none;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    transition: color .3s ease-in-out,
+                background-color .3s ease-in-out,
+                opacity .3s ease-in-out;
+}
+
+.task-form__button:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+.task-form__button:active{
+    opacity: .67;
+}
+
+.card-list{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    border: 1px solid black;
+    margin: 0 .7rem 1rem 0;
+}
+
+
+/* .card:active .card__checkbox{
+    display: none;
+} */
+
+.checkbox__label{
+    display: flex;
+    flex-direction: column; 
+    position: relative;
+    background-color: transparent;
+    padding: .5rem 1rem;
+}
+
+.card__checkbox{
+    align-self: end;
+    visibility: hidden;
+    position: absolute;
+}
+
+.card__checkbox::after{
+    
+}
+
+.card__checkbox:checked ~ .card__checkbox {
+    background-color: yellow;
+}
+
+.card__checkbox:not(:checked) ~ .card-footer > .card-button{
+    opacity: 1;
+}
+
+.card__item{
+    margin: 0 0 .5rem 0;
+}
+
+.card__item:last-child{
+    margin: 0;
+}
+
+.card__id{
+    font-size: .5rem;
+}
+
+.card__text{
+    font-size: .7rem;
+}
+
+.card__title{
+    font-size: 1.5rem;
+}
+
+.card-footer{
+    display: flex;
+    padding: .5rem 0;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.card-button{
+    display: flex;
+    align-items: center;
+    outline: none;
+    opacity: 0;
+    justify-content: center;
+    font-size: .7rem;
+    padding: .3rem .5rem;
+    background-color: transparent;
+    color: #000;
+    border-radius: 5px;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    transition: color .3s ease-in-out,
+                background-color .3s ease-in-out,
+                opacity .3s ease-in-out;
+}
+
+.card-button__text{
+    margin: 0 auto;
+}
+
+.card-button:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+.card-button:active{
+    opacity: .67;
+}
