@@ -21,7 +21,6 @@
     "handlebars": "^4.7.6",
     "mongoose": "^5.9.26",
     "passport": "^0.4.1",
-    "passport-github": "^1.1.0",
     "passport-local": "^1.0.0"
   }
 }

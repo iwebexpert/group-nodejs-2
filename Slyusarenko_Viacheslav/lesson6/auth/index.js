@@ -1,7 +1,5 @@
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
-const GitHubStrategy = require('passport-github').Strategy;
-
 const UserModel = require('../models/User');
 
 passport.use(
@@ -40,14 +38,6 @@ module.exports = {
     successRedirect: '/tasks',
     failureRedirect: '/login?error=1',
   }),
-
-  githubAuth: passport.authenticate, //'github', {
-  //   failureRedirect: '/login?error=1',
-  //   successRedirect: '/login',
-  //   // function( req, res ) {
-  //   //   res.redirect('/');
-  //   // }
-  // }),
 
   mustBeAutheticated: (req, res, next) => {
     if ( req.user ) {
