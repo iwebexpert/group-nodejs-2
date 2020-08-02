@@ -1,24 +1,9 @@
-<h2>Регистрация</h2>
-<form method="POST" action="/register">
-<div>
-    <input type="text" name="email" placeholder="E-mail" />
-</div>
-<div>
-    <input type="text" name="firstName" placeholder="Имя" />
-</div>
-<div>
-    <input type="text" name="lastName" placeholder="Фамилия" />
-</div>
-<div>
-    <input type="password" name="password" placeholder="Пароль" />
-</div>
-<div>
-    <input type="password" name="repassword" placeholder="Повторите пароль" />
-</div>
-<div>
-    <input type="submit" value="Зарегистрироваться" />
-</div>
-<div>
-    <a href="/auth">Авторизоваться</a>
-</div>
+<h2>Register</h2>
+  <form method="POST" action="/register">
+    <input style="display:block;" type="email" name="email" placeholder="e-mail" />
+    <input style="display:block;" type="text" name="username" placeholder="helloWorld" />
+    <input style="display:block;" type="password" name="password" placeholder="password" />
+    <input style="display:block;" type="password" name="repassword" placeholder="repeat password" />
+    <input type="submit" value="register" />
+  <a href="/auth">Sign in</a>
 </form>
