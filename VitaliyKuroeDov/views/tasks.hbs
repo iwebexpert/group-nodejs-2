@@ -14,20 +14,16 @@
     </form>
     <div class="card-list">
         {{#each tasksList }} 
-            <div class="card">
-                <label class="checkbox__label">
-                    <input type="checkbox" class="card__checkbox">
-                    <div class="fader"></div>
+            <a class="card" href="/tasks/{{_id}}">
                     <span class="card__item card__id">ID: {{this._id}}</span>
                     <span class="card__item card__title">Title: {{this.title}}</span>
                     <span class="card__item card__text">Status: {{this.complited}}</span>
-                    <div class="card__item card-footer">
-                        <button type="submit" class="card-button" id="update" onclick="updateRecord(`{{this._id}}`)" >Update</button>
-                        <button type="submit" class="card-button" id="delete" onclick="deleteRecord(`{{this._id}}`)" >Delete</button>
-                    </div>
                 </label>
-            </div>
+            </a>
+            <button type="submit" class="card-button" id="delete" onclick="deleteRecord(`{{this._id}}`)" >Delete</button>
+            
         {{/each}}
     </div>
+    <a href="/" class="task-form__button" style="max-width: 30%">Главная</a>
 </section>
 <script src="script.js"></script>

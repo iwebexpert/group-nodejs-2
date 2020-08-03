@@ -103,6 +103,19 @@ app.get('/tasks', async (req, res) => {
     res.render('tasks', { tasksList })
 })
 
+app.get('/tasks/:id', async (req, res) => {
+    const task = await taskMongoose.findById(req.params.id).lean()
+    res.render('taskItem', task)
+})
+
+app.post('/tasks/:id', async (req, res) => {
+    const searchTask = await taskMongoose.findById(req.params.id)
+    searchTask.set( 'title', req.body.title )
+    searchTask.save()
+    res.redirect('/tasks')
+})
+
+
 app.post('/tasks', async (req, res) => {
 
     if (req.body.title === '') {

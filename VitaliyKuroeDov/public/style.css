@@ -121,69 +121,35 @@ body{
 .card-list{
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .card{
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 30%;
     border: 1px solid black;
+    color: #000;
     margin: 0 .7rem 1rem 0;
-}
-
-.card * {
-    cursor: pointer;
-}
-
-.checkbox__label{
-    display: flex;
-    flex-direction: column; 
-    position: relative;
-    background-color: transparent;
     padding: .5rem 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: color .3s ease-in-out,
+                background-color .3s ease-in-out,
+                opacity .3s ease-in-out,
+                border-radius .3s ease-in-out;
 }
 
-.card__checkbox{
-    align-self: end;
-    visibility: hidden;
-    position: absolute;
-}
-
-.card__checkbox:checked ~ .card__checkbox {
-    background-color: yellow;
-}
-
-.card__checkbox:not(:checked) ~ .card-footer > .card-button{
-    opacity: 0;
-}
-
-.card__checkbox:checked ~ .card-footer > .card-button{
-    border-color: #fff;
-}
-
-.card__checkbox:checked ~ .card__item{
-    color: #fff;
-}
-
-.card__checkbox:checked ~ .card-footer > .card-button,
-.card__checkbox:checked ~ .fader::after{
-    opacity: 1;
+.card:hover{
+    border-radius: 5px;
     background-color: #000;
     color: #fff;
 }
 
-.fader::after{
-    content: '';
-    display: block;
-    height: 100%;
-    width: 100%;
-    background-color: tomato; 
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    transition: opacity .2s ease-in-out;
+.card:active{
+    opacity: .67;
 }
 
 .card__item{
@@ -219,9 +185,9 @@ body{
     display: flex;
     align-items: center;
     outline: none;
-    opacity: 0;
     justify-content: center;
     font-size: .7rem;
+    margin: 0 .3rem 0 0;
     padding: .3rem .5rem;
     background-color: transparent;
     color: #000;

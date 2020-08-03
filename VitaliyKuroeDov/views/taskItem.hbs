@@ -1,0 +1,75 @@
+<head>
+    <style>
+        body{
+            margin: 0 auto;
+        }
+        .container{
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .task-form{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1rem;
+            border-radius: 5px;
+            border: 1px solid #000;
+        }
+        .task-form__label{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+            margin: 0 1rem 0 0;
+        }
+        .task-form__input{
+            border: 1px solid #000;
+            border-radius: 0;
+            padding: .5rem 1.5rem;
+            background-color: transparent;
+            flex-grow: 1;
+            margin: 0 1rem 0 0;
+            transition: border-radius .3s ease-in-out;
+        }
+        .task-form__input:focus{
+            border-radius: 5px;
+        }
+        .task-form__button{
+            background: transparent;
+            max-width: 30%;
+            display: flex;
+            padding: .5rem 1.5rem;
+            border: 1px solid #000;
+            border-radius: 5px;
+            outline: none;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            transition: color .3s ease-in-out,
+                        background-color .3s ease-in-out,
+                        opacity .3s ease-in-out;
+        }
+
+        .task-form__button:hover{
+            background-color: #000;
+            color: #fff;
+        }
+
+        .task-form__button:active{
+            opacity: .67;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Task Name : {{title}}</h2>
+        <form action="/tasks/{{_id}}" method="POST" class="task-form" name={{_id}} >
+            <input type="text" class="task-form__input" name="title" placeholder="{{title}}">
+            <input type="submit" class="task-form__button" value="Rename">
+        </form>
+        <a href="/tasks" class="task-form__button">Назад </a>
+    </div>
+</body>
+    
