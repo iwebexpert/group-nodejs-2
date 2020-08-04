@@ -2,7 +2,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <header class="header">
-    <h2 class="title">TaskList</h2>
+    <h2 class="title">Node JS GB lesson 7</h2> 
+
     <nav class="navigation">
         <a href="/" class="link__item" >Главная</a>
         {{#if user}}
@@ -15,6 +16,7 @@
     </nav>
 </header>
 <section class="container">
+
      <form action="/tasks" method="POST" class="task-form">
         <label for="" class="task-form__label">
             <span class="task-form__text">Set new Task name: </span>
@@ -22,7 +24,10 @@
         </label>
         <input class="task-form__button" type="submit" name="" id="" value="Send">
     </form>
+    <h2 class="title">TaskList</h2>
+
     <div class="card-list">
+
         {{#each tasksList }} 
             <div class="card">
                 {{#if this.complited}}

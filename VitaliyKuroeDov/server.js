@@ -1,7 +1,7 @@
 const express = require('express')
 const consolidate = require('consolidate')
 const path = require('path')
-const port = 4000
+const config = require('./config')
 const request = require('request')
 const cheerio = require('cheerio')
 const app = express()
@@ -16,8 +16,7 @@ const taskMongoose = require('./src/models/taskMongo')
 const userModel = require('./src/models/user')
 const passport = require('./auth')
 
-
-mongoose.connect('mongodb://127.0.0.1:27017/GB', {
+mongoose.connect(`mongodb://${config.mongo}/GB`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -70,8 +69,9 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     secret: '1234',
-    store: new MongoStore({mongooseConnection: mongoose.connection})
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
 }))
+
 app.use(passport.initialize)
 app.use(passport.session)
 
@@ -84,8 +84,6 @@ app.get('/', (req, res) => {
     res.redirect('/tasks')
 })
 
-
-
 app.get('/news', (req, res) => {
     res.render('news', { news })
 })
@@ -97,7 +95,6 @@ app.get('/users', (req, res) => {
 app.get('/users/:username', (req, res) => {
     const user = users[req.params.username] ? users[req.params.username] : users['irina']
     res.render('user', { user, news, id: req.params.username })
-
 })
 
 app.post('/users/:username/news', (req, res, next) => {
@@ -117,6 +114,8 @@ app.post('/users/:username/news', (req, res, next) => {
 app.get('/tasks', async (req, res) => {
     const tasksList = await taskMongoose.find({}).lean()
     res.render('tasks', { tasksList })
+
+ 
 })
 //зайти в форму задачи
 app.get('/tasks/:id', async (req, res) => {
@@ -198,9 +197,9 @@ app.get('/logout', (req, res) => {
 
 const init = () => {
     getNews()
-    music.init(`Server stat in ${port}`)
+    music.init(`Server stat in ${config.port}`)
 }
 
-app.listen(port, () => {
+app.listen(config.port, () => {
     init()
 })

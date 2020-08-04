@@ -9,11 +9,11 @@ passport.use(
     async (username, password, done ) => {
         const user = await UserModel.findOne({email: username})
         
-        if(!user) {
+        if (!user) {
             return done(null, false)
         }
 
-        if(!user.validatePassword(password)){
+        if (!user.validatePassword(password)) {
             return done(null, false)
         }
 

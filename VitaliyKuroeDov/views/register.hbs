@@ -2,7 +2,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <header class="header">
-    <h2 class="title">Regitration</h2> 
+    <h2 class="title">Node JS GB lesson 7</h2> 
+
     <nav class="navigation">
         <a href="/" class="link__item">Main page</a>
         {{#if user}}
@@ -14,7 +15,8 @@
     </nav>
 </header>
 <body>
-    <section class="container">
+    <section class="container-form">
+        <h2 class="title">Regitration</h2> 
         <form method="POST" action="/register" class="form-reg">
             <input type="email" name="email" placeholder="e-mail" class="form-reg-input text"/>
             <input type="text" name="firstName"  placeholder="Name" class="form-reg-input text"/>

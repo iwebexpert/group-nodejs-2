@@ -57,6 +57,18 @@ a{
     padding: 1rem 2rem;
 }
 
+.container .title{
+    margin: 0 0 2rem 0;
+}
+
+.container-form{
+    padding: 1rem 20rem;
+}
+
+.container-form .title{
+    margin: 0 0 2rem 0;
+}
+
 .list{
     margin: 0;
     padding: 0;
