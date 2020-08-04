@@ -1,6 +1,13 @@
 nav {
     background-color: khaki;
     height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.auth-menu {
+    list-style-type: none;
 }
 
 .nav-menu {
@@ -12,7 +19,7 @@ nav {
     padding: 0;
 }
 
-.nav-menu li {
+.nav-menu li, .auth-menu li {
     display: inline;
     margin: 0 10px;
 }
@@ -47,4 +54,8 @@ h1 {
 
 .hidden {
     display: none;
+}
+
+.error {
+    color: red;
 }

@@ -17,7 +17,7 @@ const establishMongoConnection = async () => {
         admin.buildInfo((err, info) => {
             if (err) reject(err);
             console.log(`Connection to MongoDB (version ${info.version}) has been successfully established`);
-            resolve();
+            resolve(mongoose.connection);
         })
     });
 };
