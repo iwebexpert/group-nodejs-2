@@ -8,7 +8,7 @@ createTask = (req, res) => {
     
     task.save()
         .then(() => {
-            return res.redirect('/')
+            return res.redirect('/tasks')
         })
         .catch(error => {
             return res.render('error', {error, message: 'Task not created!'})
@@ -21,7 +21,7 @@ updateTask = async (req, res) => {
     Task.findByIdAndUpdate(req.params.id, req.body, (err, task) => {
         if (err) return res.render('error', { error: err })
         task.save()
-            .then(() => res.redirect('/'))
+            .then(() => res.redirect('/tasks'))
             .catch(error => {
                 return res.render('error', { error })
             })
@@ -33,7 +33,7 @@ deleteTask = async (req, res) => {
         if (err) {
             return res.render('error', { success: false, error: err })
         }
-        return res.redirect('/')
+        return res.redirect('/tasks')
     }).catch(err => console.log(err))
 }
 

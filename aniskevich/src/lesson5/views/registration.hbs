@@ -1,0 +1,12 @@
+<h2>Registration form</h2>
+<div class="error">{{ error }}</div>
+<form action="/registration" method="POST">
+    <label for="email">Email</label>
+    <input type="text" name="email">
+    <label for="password">Password</label>
+    <input type="password" name="password">
+    <label for="repassword">Repeat password</label>
+    <input type="password" name="repassword">
+    <button>Registration</button>
+</form>
+<a href="/login"><button>To login</button></a>

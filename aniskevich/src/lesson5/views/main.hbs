@@ -1,3 +1,4 @@
+<a href="/logout"><button>Log out</button></a>
 <h2>Tasks grid</h2>
 <div>
     {{#each tasks}}
@@ -6,15 +7,15 @@
             {{this.title}}
         </div>
         <div>
-            <a href="/task/{{this._id}}"><button>view</button></a>
-            <a href="/update/{{this._id}}"><button>update</button></a>
-            <a href="/delete/{{this._id}}"><button>remove</button></a>
+            <a href="/tasks/{{this._id}}"><button>view</button></a>
+            <a href="/tasks/update/{{this._id}}"><button>update</button></a>
+            <a href="/tasks/delete/{{this._id}}"><button>remove</button></a>
         </div>
     </div>
     {{/each}}
 </div>
 <h4>Create new task</h4>
-  <form action="/task" method="POST">
+  <form action="/tasks" method="POST">
     <label for="title">Task title</label>
     <input type="text" name="title">
     {{!-- <label for="isDone">Done?</label>
