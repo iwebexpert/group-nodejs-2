@@ -1,8 +1,7 @@
 const express = require("express");
 const consolidate = require("consolidate");
 const path = require("path");
-const request = require("request");
-const cheerio = require("cheerio");
+const news = require("../Lesson 3/getNews");
 
 const app = express();
 const port = 4000;
@@ -24,34 +23,26 @@ app.set("view engine", "hbs"); // Какое расширение исп-ем
 app.set("views", path.resolve(__dirname, "views")); // Путь к шаблону
 
 app.get("/users/:id", (req, res) => {
-  const user = users[req.params.id];
+  const user = users[req.params.id] ? users[req.params.id] : users[1];
   console.log(user);
-  if (user ? user : "1") res.render("user", user);
+  const mainNews = news.mainNews;
+  res.render("user", { ...user, mainNews }, (err, html) => {
+    console.log(mainNews);
+    res.send(html);
+  });
+});
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.post("/news", (req, res) => {
+  const quantityNews = req.body.count ? req.body.count : 10;
+  console.log(req.body.count ? req.body.count : 10);
+  const mainNews = news.mainNews;
+  const sortedNews = mainNews.slice(0, quantityNews);
+  res.render("news", { quantityNews, sortedNews });
 });
 
 app.listen(port, () => {
   console.log(`Server is running on Port: ${port}!`);
-});
-
-request("https://rg.ru/", (err, res, body) => {
-  if (!err && res.statusCode === 200) {
-    const $ = cheerio.load(body);
-    const mainNews = $("div.b-news__list-item")
-      .find("h2")
-      .find("a")
-      .map((i, el) => $(el).text())
-      .get()
-      .join("\n");
-
-    console.log(mainNews);
-
-    const secondaryNews = $("div.b-news-inner__list-item-wrapper")
-      .find("h2")
-      .find("a")
-      .map((i, el) => $(el).text())
-      .get()
-      .join("\n");
-
-    console.log(secondaryNews);
-  }
 });

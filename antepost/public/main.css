@@ -1,0 +1,50 @@
+nav {
+    background-color: khaki;
+    height: 30px;
+}
+
+.nav-menu {
+    list-style-type: none;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+}
+
+.nav-menu li {
+    display: inline;
+    margin: 0 10px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.settings-form {
+    border: 1px solid black;
+    display: inline-block;
+}
+
+.settings-form * {
+    margin: 10px;
+}
+
+.history-table {
+    width: 100vw;
+    word-wrap: break-word;
+    table-layout: fixed;
+}
+
+.history-table, .history-table td {
+    border: 1px solid #333;
+}
+
+.history-table thead, .history-table tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+.hidden {
+    display: none;
+}

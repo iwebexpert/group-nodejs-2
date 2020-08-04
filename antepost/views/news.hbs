@@ -1,0 +1,16 @@
+<div>
+    {{#if noCookie}}
+    <p>Please select settings from form below</p>
+    {{else}}
+    <h1>Top {{newsItemsNumber}} latest news from <a href="https://{{websiteToParse}}">{{websiteToParse}}</a></h1>
+    <ul>
+        {{#each newsArr}}
+        <li>
+            {{this.time}}: <a href={{this.link}}>{{this.headline}}</a>
+        </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+
+    {{> form}}
+</div>

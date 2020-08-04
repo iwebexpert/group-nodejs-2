@@ -1,0 +1,10 @@
+<div>
+    <p>This is your task:</p>
+    <p>Title: {{title}}</p>
+    <p>Completed: {{completed}}</p>
+</div>
+
+<button onclick="handleDelete('{{_id}}')">Delete task</button>
+
+<h2>Update the task</h2>
+{{> tasks_form}}
