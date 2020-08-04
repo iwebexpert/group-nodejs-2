@@ -7,23 +7,34 @@
     <h2>TaskList</h2>
      <form action="/tasks" method="POST" class="task-form">
         <label for="" class="task-form__label">
-            <span class="task-form__text">Имя задачи: </span>
+            <span class="task-form__text">Set new Task name: </span>
             <input class="task-form__input" type="text" name="title" id="">
         </label>
         <input class="task-form__button" type="submit" name="" id="" value="Send">
     </form>
     <div class="card-list">
         {{#each tasksList }} 
-            <a class="card" href="/tasks/{{_id}}">
+            <div class="card">
+                {{#if this.complited}}
+                    <a class="card-link uncomplited" href="/tasks/{{_id}}">
+                {{/if}}
+                {{#unless this.complited}}
+                    <a class="card-link " href="/tasks/{{_id}}">
+                {{/unless}}
+
                     <span class="card__item card__id">ID: {{this._id}}</span>
                     <span class="card__item card__title">Title: {{this.title}}</span>
-                    <span class="card__item card__text">Status: {{this.complited}}</span>
-                </label>
-            </a>
-            <button type="submit" class="card-button" id="delete" onclick="deleteRecord(`{{this._id}}`)" >Delete</button>
-            
+                    <span class="card__item card__text">Status: 
+                        {{#if this.complited}}Выполнено{{/if}}
+                        {{#unless this.complited}}Не Выполнено{{/unless}}
+                    </span>
+                </a>
+                <button type="submit" class="card-button" id="delete" onclick="deleteRecord(`{{this._id}}`)" >Delete</button>
+            </div>
         {{/each}}
     </div>
-    <a href="/" class="task-form__button" style="max-width: 30%">Главная</a>
+    <nav class="navigation">
+        <a href="/" class="task-form__button" >Главная</a>
+    </div>
 </section>
 <script src="script.js"></script>

@@ -1,9 +1,9 @@
 const soundEffects = require("node-sound-effects")
 const terminalText = require('./terminalText')
 
-exports.init = () => {
+exports.init = (text) => {
     soundEffects.play("upload")
-    terminalText.init()
+    terminalText.init(text)
 }
 
 

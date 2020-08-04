@@ -9,6 +9,7 @@ const Handlebars = require('handlebars')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const taskMongoose = require('./src/models/taskMongo')
+const music = require('./src/music')
 
 mongoose.connect('mongodb://127.0.0.1:27017/GB', {
     useNewUrlParser: true,
@@ -97,57 +98,50 @@ app.post('/users/:username/news', (req, res, next) => {
     }
     res.render('newsList', user)
 })
-
+//Список задач
 app.get('/tasks', async (req, res) => {
     const tasksList = await taskMongoose.find({}).lean()
     res.render('tasks', { tasksList })
 })
-
+//зайти в форму задачи
 app.get('/tasks/:id', async (req, res) => {
     const task = await taskMongoose.findById(req.params.id).lean()
     res.render('taskItem', task)
 })
-
+//Обновить имя задачи из его формы
 app.post('/tasks/:id', async (req, res) => {
-    const searchTask = await taskMongoose.findById(req.params.id)
-    searchTask.set( 'title', req.body.title )
-    searchTask.save()
+
+    if(req.body.title) {
+        await taskMongoose.updateOne({ _id: req.params.id }, { $set: { title: req.body.title }})
+    }
+
+    if (req.body.complited) {
+        await taskMongoose.updateOne({ _id: req.params.id }, { $set: { complited: req.body.complited }})
+    }
+
     res.redirect('/tasks')
 })
 
-
+//создание задачи
 app.post('/tasks', async (req, res) => {
 
-    if (req.body.title === '') {
-        res.redirect('/tasks')
-    } else {
-        const newTask = new taskMongoose(req.body)
-        const saveTaks = await newTask.save()
+    if (req.body.title !== '') {
+        await taskMongoose(req.body).save()
+        music.init(`Task ${req.body.title} created`)
+    } 
 
-        res.redirect('/tasks')
-    }
+    res.redirect('/tasks')
 })
 
-app.put('/tasks', async (req, res) => {
-
-    if(req.body._id) {
-        const searchTask = await taskMongoose.findById(req.body._id)
-        const status = !searchTask.complited 
-
-        searchTask.set( 'complited', status )
-        searchTask.save()
-
-        res.send({status: 'ok'})
-    }
-})
-
+//Удаляем task через внешний скрипт 
 app.delete('/tasks', async (req, res) => {
     if(req.body._id) {
-        const delTasks = await taskMongoose.findByIdAndDelete(req.body)
+        await taskMongoose.findByIdAndDelete(req.body)
         const tasksList = await taskMongoose.find(req.body).lean()
 
         if (tasksList.length <= 0 ) {
             res.send({status: 'ok'})
+            music.init(`Task ${req.body._id} deleted`)
 
         } else {
             res.redirect('/tasks')
@@ -157,8 +151,9 @@ app.delete('/tasks', async (req, res) => {
 
 const init = () => {
     getNews()
-    console.log(`Server stat in ${port}`)
+    music.init(`Server stat in ${port}`)
 }
+
 app.listen(port, () => {
     init()
 })
