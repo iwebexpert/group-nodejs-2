@@ -1,0 +1,13 @@
+<p>{{ navpanel user '/tasks/update/' }}</p>
+
+<i>Update Task id: <strong>{{ task._id }}</strong></i>
+<hr>
+<form action="/tasks/update/{{ task._id }}" method="POST">
+    <label for="taskTitle">Title:</label>
+    <input id="taskTitle" type="text" name="title" value="{{ task.title }}">
+    <button type="submit">Save Task</button>
+</form>
+
+<a href="/">
+    <strong>Back to main page</strong>
+</a>

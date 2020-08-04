@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <title>Login</title>
+</head>
+  <body>
+    <p>{{ navpanel user '/login' }}</p>
+
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="Имя пользователя" value="{{ rememberUserName }}"/>
+      Запомнить {{ rememberLoginHelper 'rememberUserName' rememberUserName }}
+      <br/>
+      <input type="password" name="password" placeholder="Пароль"/><br/>
+      <input type="submit" value="Войти" /> 
+    </form> 
+
+    <div class="errors-container">
+        {{#if error }}
+          <ul class="errors-list">
+            <li>Неверное имя пользователя или пароль</li>
+          </ul>
+        {{/if}}
+    </div>
+  </body>
+</html>
