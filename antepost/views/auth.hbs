@@ -1,0 +1,15 @@
+<h1>Enter your email and password</h1>
+{{#if err}}
+<p class="error">Wrong username or password</p>
+{{/if}}
+<form action="/auth" method="post" class="settings-form">
+    <label for="email">Enter email to log in:</label>
+    <input type="email" name="email" id="emial">
+    <br>
+
+    <label for="password">Enter password to log in:</label>
+    <input type="password" name="password" id="password">
+    <br>
+
+    <input type="submit">
+</form>

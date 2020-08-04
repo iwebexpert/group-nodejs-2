@@ -1,8 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const exphbs = require('express-handlebars');
 const path = require('path');
 const cookie = require('cookie');
 const methodOverride = require('method-override');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const newsParser = require('./misc_scripts/newsParserForServer');
 const { possibleWebsitesToParse } = require('./misc_scripts/newsParserConfig');
@@ -13,10 +16,26 @@ const performMysqlQuery = require('./db_utilities/mysqlQuery');
 const loggingMiddleware = require('./db_utilities/mysqlLoggingMiddleware');
 
 const Task = require('./models/TaskMongo');
+const User = require('./models/UserMongo');
+const passport = require('./auth');
+
+const mongoose = require('mongoose');
+
+const app = express();
 
 // Connect to DBs
 let mysqlPool;
-establishMongoConnection()
+/* establishMongoConnection()
+    .then(res => {
+        app.use(session({
+            resave: true,
+            saveUninitialized: false,
+            secret: '1234',
+            store: new MongoStore({ mongooseConnection: res }),
+        }));
+        app.use(passport.initialize);
+        app.use(passport.session);
+    })
     .then(res => {
         return establishMysqlConnection();
     })
@@ -28,9 +47,22 @@ establishMongoConnection()
     })
     .catch(err => {
         throw err;
-    });
+    }); */
 
-const app = express();
+mongoose.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+});
+
+app.use(session({
+    resave: true,
+    saveUninitialized: false,
+    secret: '1234',
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+}));
+app.use(passport.initialize);
+app.use(passport.session);
 
 // Static files
 app.use(express.static('public'));
@@ -50,6 +82,8 @@ app.use(methodOverride((req, res, next) => {
         return method;
     }
 }));
+
+app.use('/tasks', passport.mustBeAutheticated);
 
 // Routes
 app.get('/', (req, res) => {
@@ -149,7 +183,7 @@ app.delete('/tasks/:id', async (req, res, next) => {
 });
 
 // MySQL logging middleware
-app.use((req, res, next) => {
+app.use('/tasks/:id', (req, res, next) => {
     loggingMiddleware({
         newDocument: res.createdTask ? res.createdTask : res.originalTask,
         oldDocument: res.deletedTask ? res.deletedTask : res.updatedTask,
@@ -157,3 +191,55 @@ app.use((req, res, next) => {
         isDeleted: Boolean(res.deletedTask),
     }, mysqlPool);
 });
+
+//Registration/Auth
+app.get('/register', (req, res) => {
+    let { err } = req.query;
+    if (err === 'wrong-email') {
+        err = 'User with that email already registered';
+    } else if (err === 'wrong-repass') {
+        err = 'Password and repeated password do not match';
+    }
+    res.render('register', { err });
+})
+
+app.post('/register', async (req, res) => {
+    const { repassword, ...restBody } = req.body;
+    if (restBody.password === repassword) {
+        const user = new User(restBody);
+        const success = await user.save(err => {
+            if (err.name === 'MongoError' && err.code === 11000) {
+                res.redirect('/register?err=wrong-email');
+            }
+        });
+        if (success) {
+            res.redirect('/auth');
+        }
+    } else {
+        res.redirect('/register?err=wrong-repass');
+    }
+});
+
+app.get('/auth', (req, res) => {
+    const { err } = req.query;
+    res.render('auth', { err });
+});
+
+app.post('/auth', passport.authenticate);
+
+app.get('/logout', (req, res) => {
+    delete app.locals.email;
+    req.logout();
+    res.redirect('/auth');
+});
+
+establishMysqlConnection()
+    .then(res => {
+        mysqlPool = res;
+        app.listen(4000, () => {
+            console.log('The server has been started on port 4000!');
+        });
+    })
+    .catch(err => {
+        throw err;
+    });
