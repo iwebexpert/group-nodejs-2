@@ -1,0 +1,13 @@
+<h2>Sign in</h2>
+{{#if error}}
+  <p style="color:red;">Wrong email or password</p>
+{{/if}}
+
+<form method="POST" action="/auth">
+  <input style="display:block;margin:10px;" type="email" name="email" placeholder="e-mail" value="{{email}}"/>
+  <input style="display:block;margin:10px;" type="password" name="password" placeholder="password" />
+  <input style="margin-left:10px;" type="checkbox" id="rememberMe" name="rememberMe" checked /><label style="font-size:10px;color:grey;" for="rememberMe">Remember me</label>
+  <input type="submit" value="Sign in" />
+  <br />
+  <a style="margin-left:10px;" href="/register">or register</a>
+</form>

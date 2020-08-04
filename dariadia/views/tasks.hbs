@@ -1,3 +1,5 @@
+
+<a href="/logout"><button>Log out</button></a>
 <div style="display: flex;flex-direction: row;justify-content: space-evenly;align-items: baseline;">
     <div>
     {{#if tasks}}
@@ -12,13 +14,41 @@
         <span style="color: grey;">id: {{this.id}}</span>
         <br />
         <br />
-        <span style="">Priority: 
+        <span>Priority: 
           {{#if this.priorityKey}}
             <span style="color: white;background: red;padding: 5px;border-radius: 20px;">{{this.priority}}</span>
           {{else}}
             <span style="color: white;background: green;padding: 5px;border-radius: 20px;">{{this.priority}}</span>
           {{/if}}
         </span>
+        <br />
+        <br />
+        {{#unless this.completed}}
+          <form method="POST" action="/tasks/update">
+            <input type="hidden" value="{{this.id}}" name="id" />
+            <input placeholder="{{this.title}}" name="title" />
+            <label for="priority">Set priority</label>
+            <select name="priority" id="updatePriority">
+              <option value="minor">minor</option>
+              <option value="normal" selected>normal</option>
+              <option value="high">high</option>
+            </select>
+            <label for="status">Set status</label>
+            <select name="status" id="updateStatus">
+              <option value="to do">To do</option>
+              <option value="in progress">In progress</option>
+              <option value="Code review">Code review</option>
+              <option value="Ready for testing">Ready for testing</option>
+              <option value="Ready for deploy">Ready for deploy</option>
+              <option value="Done">Done</option>
+            </select>
+            <input style="margin-top: 10px;" type="submit" value="Update task" />
+          </form>
+        {{/unless}}
+        <form method="POST" action="/tasks/remove">
+          <input type="hidden" value="{{this.id}}" name="id" />
+            <input type="submit" value="Delete task" />
+        </form>
       </li>
       {{/each}}
     </ol>

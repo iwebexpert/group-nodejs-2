@@ -1,30 +1,24 @@
 const express = require("express");
 const consolidate = require("consolidate");
 const path = require("path");
-const request = require("request");
-const cheerio = require("cheerio");
+
+const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
 const nodeCookie = require("node-cookie");
+const config = require("./config");
 
 const app = express();
-const port = 4000;
 
-const pages = {
-  ru: "https://journal.bookmate.com/",
-  sr: "https://zurnal.bookmate.com/",
-};
-const dictionary = { ru: 1, sr: 0 };
-const legend = {
-  1: ["Книги", "Knjige"],
-  2: ["Тренды", "Trendovi"],
-  3: ["Интервью", "Intervjui"],
-  4: ["Писатели", "Pisci"],
-  5: ["Истории", "Priče"],
-  6: ["Букмейт", "Bookmate"],
-};
+const taskModel = require("./models/task");
+const userModel = require("./models/user");
+const passport = require("./auth");
 
-const getKeyByValue = (topicName) => {
-  return +Object.keys(legend).find((key) => legend[key].includes(topicName));
-};
+mongoose.connect(`mongodb://localhost:${config.mongoosePort}/todo`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
 
 app.engine("hbs", consolidate.handlebars);
 app.set("view engine", "hbs");
@@ -33,65 +27,128 @@ app.set("views", path.resolve(__dirname, "views"));
 //Middleware для работы с form
 app.use(express.urlencoded({ extended: false }));
 
+app.use(
+  session({
+    resave: true,
+    saveUninitialized: false,
+    secret: "1234",
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  })
+);
+app.use(passport.initialize);
+app.use(passport.session);
+
 //Для работы с JSON
 app.use(express.json());
 
+//Проверка авторизации
+app.use("/tasks", passport.mustBeAutheticated);
+
+//Обработка запросов
 app.get("/", (req, res) => {
-  const { count, topic, language } = nodeCookie.parse(req);
-  res.render("articles", { count, topic, language });
+  res.redirect("/tasks");
 });
 
-app.post("/articles", (req, res) => {
-  const topic = +req.body.topics;
-  const count = +req.body.count;
-  const language = +req.body.language;
-  const page = language === dictionary.ru ? pages.ru : pages.sr;
+app.get("/tasks", async (req, res) => {
+  const tasksHelper = await taskModel.find({});
+  const tasks = [];
+  for (let i of tasksHelper) {
+    tasks.push({
+      title: i.title,
+      status: i.status,
+      priority: i.priority,
+      priorityKey: i.priority === "high" ? 1 : 0,
+      id: i._id,
+    });
+  }
+  res.render("tasks", { tasks });
+});
 
-  nodeCookie.create(res, "topic", topic);
-  nodeCookie.create(res, "count", count);
-  nodeCookie.create(res, "language", language);
+app.post("/tasks", async (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  const task = new taskModel(req.body);
+  await task.save();
+  res.redirect("/tasks");
+});
 
-  request(page, (err, response, body) => {
-    if (!err && response.statusCode === 200) {
-      const $ = cheerio.load(body);
+app.post("/tasks/update", async (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  const { id, title, status, priority } = req.body;
+  const task = await taskModel.findById(id);
 
-      const featuredArticle = {
-        topicName: $(".maindsc").find(".type").text(),
-        topic: getKeyByValue($(".maindsc").find(".type").text()),
-        title: $(".maindsc").find("h2").text(),
-        cover: $(".bigthumb").attr("src"),
-      };
+  const updatedTask = {
+    title: title ? title : task.title,
+    status: status ? status : task.status,
+    priority: priority ? priority : task.priority,
+  };
 
-      const articles = [featuredArticle];
+  taskModel.updateOne({ _id: id }, updatedTask, { new: true }, function (
+    err,
+    task
+  ) {
+    if (err) return console.log(err);
+  });
 
-      $(".pitem").each(function (i, elem) {
-        // Do not request more articles than the specified number
-        if (i <= count) {
-          let articleTopic = getKeyByValue(
-            $(`.pitem:nth-child(${i})`).find(".type").text()
-          );
-          // Do not request other data if not the requested topic
-          if (topic === 10 || topic === articleTopic) {
-            articles[i] = {
-              topicName: $(`.pitem:nth-child(${i})`).find(".type").text(),
-              topic: articleTopic,
-              title: $(`.pitem:nth-child(${i})`).find(".ititle").text(),
-              cover: $(`.pitem:nth-child(${i})`).find("img").attr("src"),
-            };
-          }
-        }
-      });
+  res.redirect("/tasks");
+});
 
-      res.render("articles-assorted", {
-        articles,
-        topic,
-        count,
-        language: +language,
-      });
-    }
+app.post("/tasks/remove", async (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  const { id } = req.body;
+
+  await taskModel.findByIdAndRemove(id);
+  res.redirect("/tasks");
+});
+
+app.post("/tasks/update", async (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  const { id, title } = req.body;
+
+  await taskModel.updateOne({ _id: id }, { $set: { title } });
+  res.redirect("/tasks");
+});
+
+//Registration/Auth
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+app.post("/register", async (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  const { repassword, ...restBody } = req.body;
+  if (restBody.password === repassword) {
+    const user = new userModel(restBody);
+    await user.save();
+    res.redirect("/auth");
+  } else {
+    res.redirect("/register?err=repass");
+  }
+});
+
+app.get("/auth", (req, res) => {
+  const { error } = req.query;
+  const { email } = nodeCookie.parse(req);
+  res.render("auth", {
+    error,
+    email,
   });
 });
 
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+app.post("/auth", (req, res) => {
+  const { rememberMe, email } = req.body;
+
+  rememberMe === "on"
+    ? nodeCookie.create(res, "email", email)
+    : nodeCookie.clear(res, "email");
+
+  passport.authenticate(req, res);
+});
+
+app.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/auth");
+});
+
+app.listen(config.webPort, () => {
+  console.log("The server has been started!");
 });
