@@ -8,4 +8,4 @@ const Task = new Schema(
     { timestamps: true },
 )
 
-module.exports = mongoose.model('task', Task)
+module.exports = mongoose.model('task', Task, 'tasks')
