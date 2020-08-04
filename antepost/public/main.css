@@ -8,13 +8,13 @@ nav {
     height: inherit;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    width: 100px;
+    justify-content: flex-start;
     padding: 0;
 }
 
 .nav-menu li {
     display: inline;
+    margin: 0 10px;
 }
 
 h1 {
@@ -28,4 +28,23 @@ h1 {
 
 .settings-form * {
     margin: 10px;
+}
+
+.history-table {
+    width: 100vw;
+    word-wrap: break-word;
+    table-layout: fixed;
+}
+
+.history-table, .history-table td {
+    border: 1px solid #333;
+}
+
+.history-table thead, .history-table tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+.hidden {
+    display: none;
 }
