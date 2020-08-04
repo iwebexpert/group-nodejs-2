@@ -1,3 +1,24 @@
-<div>Node JS GB lesson 4</div> 
-<a href="/users">Список пользователей</a>
-<a href="/news">Список новостей</a>
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<header class="header">
+    <h2 class="title">Node JS GB lesson 7</h2> 
+    <nav class="navigation">
+        {{#if user}}
+            <a href="/logout" class="link__item">Logout</a>
+        {{/if}}
+        {{#unless user}}
+            <a href="/register" class="link__item">Registration</a>
+            <a href="/auth" class="link__item">Login</a>
+        {{/unless}}
+    </nav>
+</header>
+
+<div class="container">
+    <nav class="navigation">
+        <a href="/users" class="link__item">Список пользователей</a>
+        <a href="/news" class="link__item">Список новостей</a>
+        <a href="/tasks" class="link__item">Список TODO</a> 
+    </nav>
+</div>

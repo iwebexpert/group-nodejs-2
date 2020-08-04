@@ -1,0 +1,30 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<header class="header">
+    <h2 class="title">Node JS GB lesson 7</h2> 
+    <nav class="navigation">
+        <a href="/" class="link__item">Home page</a>
+
+        {{#if user}}
+            <a href="/logout" class="link__item">Logout</a>
+        {{/if}}
+        {{#unless user}}
+            <a href="/register" class="link__item">register</a>
+        {{/unless}}
+    </nav>
+</header>
+
+<body>
+    <section class="container-form">
+        <h2 class="title">Login</h2>
+        {{#if error}}<h3>Wrong login or password</h3>{{/if}}
+        <form method="POST" action="/auth" class="form-reg">
+            <input type="email" name="email" placeholder="e-mail" class="form-reg-input text"/>
+            <input type="password" name="password" placeholder="password" class="form-reg-input password"/>
+            <input type="submit" value="Enter" class="form-reg__button">
+        </form>
+    </section>
+</body>
+
+
