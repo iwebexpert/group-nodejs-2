@@ -12,7 +12,11 @@
     <title>Document</title>
 </head>
 <body>
-<div>
+<div><div>Вы вошли как: {{user}}
+    <a href="/logout">
+        <button class="btn btn-warning">Выход</button>
+    </a>
+</div>
     <h1>Список дел</h1>
     {{#if tasks}}
         <ol>
