@@ -1,0 +1,27 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<header class="header">
+    <h2 class="title">Regitration</h2> 
+    <nav class="navigation">
+        <a href="/" class="link__item">Main page</a>
+        {{#if user}}
+            <a href="/logout" class="link__item">Logout</a>
+        {{/if}}
+        {{#unless user}}
+            <a href="/auth" class="link__item">login</a>
+        {{/unless}}
+    </nav>
+</header>
+<body>
+    <section class="container">
+        <form method="POST" action="/register" class="form-reg">
+            <input type="email" name="email" placeholder="e-mail" class="form-reg-input text"/>
+            <input type="text" name="firstName"  placeholder="Name" class="form-reg-input text"/>
+            <input type="text" name="lastName" placeholder="SurName" class="form-reg-input text"/>
+            <input type="password" name="password" placeholder="password" class="form-reg-input password"/>
+            <input type="password" name="repassword" placeholder="repeat password" class="form-reg-input password">
+            <input type="submit" value="Register" class="form-reg__button">
+        </form>
+    </section>
+</body>

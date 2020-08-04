@@ -4,6 +4,15 @@
 
 <header class="header">
     <h2 class="title">Node JS GB lesson 4</h2> 
+    <nav class="navigation">
+        {{#if user}}
+            <a href="/logout" class="link__item">Logout</a>
+        {{/if}}
+        {{#unless user}}
+            <a href="/register" class="link__item">Registration</a>
+            <a href="/auth" class="link__item">Login</a>
+        {{/unless}}
+    </nav>
 </header>
 
 <div class="container">

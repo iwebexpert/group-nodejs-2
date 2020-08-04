@@ -8,13 +8,19 @@ const app = express()
 const Handlebars = require('handlebars')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
-const taskMongoose = require('./src/models/taskMongo')
 const music = require('./src/music')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
+
+const taskMongoose = require('./src/models/taskMongo')
+const userModel = require('./src/models/user')
+const passport = require('./auth')
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/GB', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: true
+    useFindAndModify: false,
 })
 
 let news
@@ -60,16 +66,25 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(session({
+    resave: true,
+    saveUninitialized: false,
+    secret: '1234',
+    store: new MongoStore({mongooseConnection: mongoose.connection})
+}))
+app.use(passport.initialize)
+app.use(passport.session)
+
 app.engine('hbs', consolidate.handlebars)
 app.set('view engine', 'hbs')
 app.set('views', path.resolve(__dirname, './views'))
+app.use('/tasks', passport.mustBeAutheticated)
 
 app.get('/', (req, res) => {
-    for (key in users) {
-        key.defaultNews = req.cookies[key]
-    }
-    res.render('index')
+    res.redirect('/tasks')
 })
+
+
 
 app.get('/news', (req, res) => {
     res.render('news', { news })
@@ -147,6 +162,38 @@ app.delete('/tasks', async (req, res) => {
             res.redirect('/tasks')
         }
     }
+})
+//Registration
+app.get('/register', (req, res) => {
+    res.render('register')
+})
+
+app.post('/register', async (req, res) => {
+    const {repassword, ...restBody} = req.body
+    
+    if(restBody.password === repassword) {
+        const user = new userModel(restBody)
+        await user.save()
+        res.redirect('/auth')
+    } else {
+        res.redirect('/register?error=repass')
+    }
+
+    res.render('register')
+})
+
+//auth
+
+app.get('/auth', (req, res) => {
+    const { error } = req.query
+    res.render('auth', { error })
+})
+
+app.post('/auth', passport.authenticate) 
+
+app.get('/logout', (req, res) => {
+    req.logout()
+    res.redirect('/auth')
 })
 
 const init = () => {

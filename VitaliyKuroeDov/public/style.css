@@ -12,7 +12,9 @@ a{
 }
 
 .title{
-
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
 }
 
 .navigation{
@@ -25,6 +27,7 @@ a{
     justify-content: center;
     align-items: center;
     padding: .5rem .7rem;
+    margin: 0 .5rem 0 0;
     border: 1px solid #000;
     outline: none;
     border-radius: 5px;
@@ -46,8 +49,12 @@ a{
     opacity: .67;
 }
 
+.link__item:last-child{
+    margin: 0;
+}
+
 .container{
-    margin: 1rem 2rem;
+    padding: 1rem 2rem;
 }
 
 .list{
@@ -152,11 +159,12 @@ a{
                 opacity .3s ease-in-out,
                 border-radius .3s ease-in-out;
 }
-.uncomplited{
+.complited{
     background-color: orange;
+
 }
 
-.uncomplited * {
+.complited * {
     color: #fff;
 }
 
@@ -228,5 +236,53 @@ a{
 }
 
 .card-button:active{
+    opacity: .67;
+}
+
+.form-reg{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+
+.form-reg-input{
+    display: flex;
+    border: 1px solid #000;
+    border-radius: 0;
+    margin: 0 0 1rem 0;
+    padding: .5rem .7rem;
+    transition: border-radius .3s ease-in-out,
+                border .3s ease-in-out;
+}
+
+.form-reg-input:last-child{
+    margin: 0;
+}
+.form-reg-input:focus{
+    border-radius: 5px;
+}
+
+.form-reg__button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    outline: none;
+    border: 1px solid #000;
+    padding: .5rem 1rem;
+    border-radius: 5px;
+    transition: background-color .3s ease-in-out,
+                opacity .3s ease-in-out,
+                color .3s ease-in-out;
+}
+
+.form-reg__button:hover{
+    background-color: orange;
+    color: #fff;
+}
+
+.form-reg__button:active{
     opacity: .67;
 }

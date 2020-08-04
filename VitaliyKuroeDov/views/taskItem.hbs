@@ -96,11 +96,13 @@
             <form action="/tasks/{{_id}}" method="POST" name={{complited}} class="task-from_upd">
                 {{#if complited}}
                     <input type="hidden" name="complited" value="false">
+                    <input type="submit" class="task-form__button" value="set uncomplited">
                 {{/if}}
                 {{#unless complited}}
                     <input type="hidden" name="complited" value="true">
+                    <input type="submit" class="task-form__button" value="set complited">
                 {{/unless}}
-                <input type="submit" class="task-form__button" value="complited">
+                
             </form>
         </div>
         <nav class="navigation">
