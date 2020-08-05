@@ -35,6 +35,10 @@ class BaseModel {
 
     static add(record)
     {
+        if (Object.values(record).filter((value) => value === '').length > 0) {
+            return false;
+        }
+
         return new Promise(((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {

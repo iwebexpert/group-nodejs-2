@@ -1,0 +1,29 @@
+<style>
+    form {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input {
+        margin-bottom: 10px;
+        padding: 7px;
+    }
+
+    button {
+        padding: 7px;
+    }
+</style>
+
+<h3>Please, Sign in</h3>
+{{#if error}}
+    <p>Login or Password is invalid</p>
+{{/if}}
+
+<form action="/signin" method="post">
+    <input type="text" name="login" placeholder="Login">
+    <input type="password" name="password" placeholder="Password">
+    <button type="submit">SignIn</button>
+</form>
+
+<p><a href="/signup">Sign Up</a></p>
