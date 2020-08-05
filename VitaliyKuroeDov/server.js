@@ -1,20 +1,10 @@
 const express = require('express')
-const consolidate = require('consolidate')
-const path = require('path')
-const config = require('./config')
-const request = require('request')
-const cheerio = require('cheerio')
-const app = express()
-const Handlebars = require('handlebars')
-const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-const music = require('./src/music')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const config = require('./config')
 
-const taskMongoose = require('./src/models/taskMongo')
-const userModel = require('./src/models/user')
-const passport = require('./auth')
+const SECRET = "XCvRTKVxa9km4HEtH9f2Jv88W7uj4MHF4zFpJqTVjYdCwFA7p9"
 
 mongoose.connect(`mongodb://${config.mongo}/GB`, {
     useNewUrlParser: true,
@@ -22,184 +12,115 @@ mongoose.connect(`mongodb://${config.mongo}/GB`, {
     useFindAndModify: false,
 })
 
-let news
+const taskModel = require('./src/models/taskMongo')
+const userModel = require('./src/models/user')
+const passport = require('./auth')
+const { json } = require('express')
 
-Handlebars.registerHelper("list", (context, options) => {
-    let ret = `<ol class="list">`;
-    for ((key) in context) {
-        ret = ret + `<li id=${key} class="list__item">` + options.fn({ ...context[key], key }) + "</li>"
-    }
-    return ret + "</ol>";
-})
+const app = express()
 
-let users = {
-    oleg: {
-        username: 'Oleg',
-        age: 30,
-        defaultNews: 3
-    },
-    irina: {
-        username: 'Irina',
-        age: 18,
-        defaultNews: 10
-    }
-}
-
-const getNews = () => {
-    request('https://habr.com', (err, res, body) => {
-        if (!err && res.statusCode === 200) {
-            news = {}
-            const $ = cheerio.load(body)
-
-            $('div[class="posts_list"]').find('a[class="post__title_link"]').each((idx, elem) => {
-                const title = $(elem).text()
-                const link = $(elem).attr('href')
-                news = { ...news, [idx]: { title: title, link: link } }
-            })
-        }
-        return news
-    })
-}
-
-app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
+app.use(cors())
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(session({
-    resave: true,
-    saveUninitialized: false,
-    secret: '1234',
-    store: new MongoStore({ mongooseConnection: mongoose.connection })
-}))
 
-app.use(passport.initialize)
-app.use(passport.session)
+const checkAuth = (req, res, next) => {
+    if(req.headers.authorization){
+        const [type, token] = req.headers.authorization.split(' ')
 
-app.engine('hbs', consolidate.handlebars)
-app.set('view engine', 'hbs')
-app.set('views', path.resolve(__dirname, './views'))
-app.use('/tasks', passport.mustBeAutheticated)
+        jwt.verify(token, SECRET, (error, decoded) => {
+            if(error){
+                return res.status(403).send()
+            }
+            req.user = decoded
+            next()
+        })
 
-app.get('/', (req, res) => {
-    res.redirect('/tasks')
-})
-
-app.get('/news', (req, res) => {
-    res.render('news', { news })
-})
-
-app.get('/users', (req, res) => {
-    res.render('users', { users })
-})
-
-app.get('/users/:username', (req, res) => {
-    const user = users[req.params.username] ? users[req.params.username] : users['irina']
-    res.render('user', { user, news, id: req.params.username })
-})
-
-app.post('/users/:username/news', (req, res, next) => {
-    const user = { username: req.body.username, countNews: req.body.newsCountDisplay !== '' ? req.body.newsCountDisplay : '15', news: {} }
-    const userName = req.body.username
-    const userNews = req.body.newsCountDisplay !== '' ? req.body.newsCountDisplay : users[userName].defaultNews
-
-    res.cookie(`${userName}`, userNews, { expires: new Date(Date.now() + 900000), httpOnly: true })
-
-    for (let i = 0; i < req.cookies[userName]; i++) {
-        user.news = { ...user.news, [i]: { title: news[i].title, link: news[i].link } }
-
+    } else {
+        return res.status(403).send()
     }
-    res.render('newsList', user)
-})
-//Список задач
+}
+
+app.use('/tasks', checkAuth)
+//get task
 app.get('/tasks', async (req, res) => {
-    const tasksList = await taskMongoose.find({}).lean()
-    res.render('tasks', { tasksList })
-
- 
+    const tasksList = await taskModel.find({}).lean()
+    res.status(200).json(tasksList)
 })
-//зайти в форму задачи
-app.get('/tasks/:id', async (req, res) => {
-    const task = await taskMongoose.findById(req.params.id).lean()
-    res.render('taskItem', task)
-})
-//Обновить имя задачи из его формы
-app.post('/tasks/:id', async (req, res) => {
-
-    if(req.body.title) {
-        await taskMongoose.updateOne({ _id: req.params.id }, { $set: { title: req.body.title }})
-    }
-
-    if (req.body.complited) {
-        await taskMongoose.updateOne({ _id: req.params.id }, { $set: { complited: req.body.complited }})
-    }
-
-    res.redirect('/tasks')
-})
-
-//создание задачи
+//save new task
 app.post('/tasks', async (req, res) => {
-
-    if (req.body.title !== '') {
-        await taskMongoose(req.body).save()
-        music.init(`Task ${req.body.title} created`)
-    } 
-
-    res.redirect('/tasks')
+    const task = new taskModel(req.body)
+    const isSaved = await task.save()
+    res.status(201).json(isSaved)
 })
 
-//Удаляем task через внешний скрипт 
-app.delete('/tasks', async (req, res) => {
-    if(req.body._id) {
-        await taskMongoose.findByIdAndDelete(req.body)
-        const tasksList = await taskMongoose.find(req.body).lean()
-
-        if (tasksList.length <= 0 ) {
-            res.send({status: 'ok'})
-            music.init(`Task ${req.body._id} deleted`)
-
-        } else {
-            res.redirect('/tasks')
-        }
-    }
+//get task by id
+app.get('/tasks/:id', async (req, res) => {
+    const task = await taskModel.findById(req.params.id)
+    res.status(200).json(task)
 })
-//Registration
-app.get('/register', (req, res) => {
-    res.render('register')
-})
-
+//registation
 app.post('/register', async (req, res) => {
     const {repassword, ...restBody} = req.body
     
     if(restBody.password === repassword) {
         const user = new userModel(restBody)
         await user.save()
-        res.redirect('/auth')
+        res.status(201).send()
     } else {
-        res.redirect('/register?error=repass')
+        res.status(400).json({message: 'User exists'})
+    }
+})
+//login
+app.post('/auth', async(req, res) => {
+    const { email, password } = req.body
+    const user = await userModel.findOne({email})
+
+    if(!user) {
+        return res.status(401).send()
     }
 
-    res.render('register')
+    if(!user.validatePassword(password)){
+        return res.status(401).send()
+    }
+
+    const plainUser = JSON.parse(JSON.stringify(user))
+    delete plainUser.password
+
+    res.status(200).json({
+        ...plainUser,
+        token: jwt.sign(plainUser, SECRET)
+    })
 })
+//delete task
+app.delete('/tasks/:id', async(req, res) => {
+    const { id } = req.body
+    const targetTask = await taskModel.findById(id)
 
-//auth
-
-app.get('/auth', (req, res) => {
-    const { error } = req.query
-    res.render('auth', { error })
+    if(targetTask) {
+        await taskModel.deleteOne(targetTask)
+        res.status(200).send({message: `${id} is deleted`})
+    } else {
+        res.status(400).send({message: `${id} not found`})
+    }
 })
+//update task
+app.patch('/tasks/:id', async(req, res) => {
+    const { id, title, complited } = req.body
+    const targetTask = await taskModel.findById(id)
 
-app.post('/auth', passport.authenticate) 
-
-app.get('/logout', (req, res) => {
-    req.logout()
-    res.redirect('/auth')
+    if(targetTask) {
+        await taskModel.updateOne({ _id: id }, {
+            $set: {
+                title,
+                complited
+            }
+        })
+        res.status(200).send({message: `${id} task is updated`})
+    } else {
+        res.status(400).send({message: `${id} task is not found`})
+    }
 })
-
-const init = () => {
-    getNews()
-    music.init(`Server stat in ${config.port}`)
-}
 
 app.listen(config.port, () => {
-    init()
+    console.log(`Server stat in ${config.port}`)
 })
