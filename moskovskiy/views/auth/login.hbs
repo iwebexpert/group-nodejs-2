@@ -1,0 +1,57 @@
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .register-form {
+        margin: 0 auto;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-control-row {
+        display: flex;
+        justify-content: space-between;
+    }
+    .register-form__control {
+        margin-bottom: 15px;
+        width: 300px;
+    }
+
+    .register-form__button {
+        width: 100px;
+        margin: 0;
+    }
+    .buttons-container {
+        display: flex;
+        justify-content: space-around;
+        width: 300px;
+        margin-left: auto;
+    }
+</style>
+
+<div class="container">
+
+    <form class="register-form" method="post" action="/auth">
+        <h2>Авторизация</h2>
+        {{#if error}}
+            <p style="color:red">Неправильный логин или пароль</p>
+        {{/if}}
+        <div class="form-control-row">
+            <label for="email">E-mail</label>
+            <input class="register-form__control" id="email" name="email" type="email">
+        </div>
+        <div class="form-control-row">
+            <label for="password">Password</label>
+            <input class="register-form__control" id="password" name="password" type="password">
+        </div>
+        <div class="form-control-row ">
+            <div class="buttons-container">
+                <button class="register-form__button" type="submit">Log In</button>
+                <button class="register-form__button" type="button" onclick="window.location.replace('/signup')">Register</button>
+            </div>
+        </div>
+    </form>
+</div>

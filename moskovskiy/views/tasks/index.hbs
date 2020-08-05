@@ -1,0 +1,110 @@
+<script>
+    function sendDelete(target) {
+        let request = new XMLHttpRequest();
+        request.open("DELETE", "/tasks/" + target.dataset.id);
+        request.onload = () => {
+            window.location.reload();
+        }
+        request.send();
+    }
+
+    function sendForm(form) {
+        form.submit();
+    }
+</script>
+<style>
+    .form-placeholder {
+        display: block;
+        width: 10px;
+    }
+
+    .task-form {
+        display: flex;
+        width: 430px;
+        justify-content: space-between;
+    }
+
+    .task-form__control {
+        height: 22px;
+    }
+
+    .task-form__title {
+        width: 250px;
+        display: block;
+        border: 1px solid #000;
+        box-sizing: border-box;
+    }
+
+    .priority-form {
+        margin: 0;
+        padding: 0;
+        width: 137px;
+        display: flex;
+        #justify-content: space-between;
+        align-items: center;
+    }
+
+    .priority-form_checkbox {
+        margin: 0 0 0 5px;
+        padding: 5px 0 0 0;
+        width: 15px;
+        height: 15px;
+    }
+
+    .task-form__submit {
+        width: 80px;
+    }
+
+    .task-list {
+        width: 430px;
+        padding: 0;
+    }
+
+    .task-list__row {
+        padding: 0;
+        margin: 0 0 10px 0;
+        height: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+
+    .delete-button {
+        height: 22px;
+    }
+</style>
+<a href="/auth/logout">Выход</a>
+
+{{#unless tasks}}
+    <p>Пока нет ни одного задания</p>
+{{/unless}}
+<form class="task-form" method="post" action="/tasks">
+    <input class="task-form__control task-form__title" name="title" type="text">
+    <select class="taks-form__control" name="priority">
+        <option value="Low">Low</option>
+        <option selected value="Normal">Normal</option>
+        <option value="High">High</option>
+    </select>
+    <div class="form-placeholder"></div>
+    <button class="task-form__submit" type="submit">Создать</button>
+</form>
+<ul class="task-list">
+    {{#each tasks}}
+        <li class="task-list__row" style="list-style-type: none">
+            <a class="task-form__title task-form__control" href="/tasks/update/{{this._id}}">{{this.title}}</a>
+            <form class="priority-form" method="post" action="/tasks/{{this._id}}">
+                <select class="task-form__control" name="priority" onchange="sendForm(this.parentElement)">
+                    <option {{#if_eq this.priority 'Low'}}selected{{/if_eq}} value="Low">Low</option>
+                    <option {{#if_eq this.priority 'Normal'}}selected{{/if_eq}} value="Normal">Normal</option>
+                    <option {{#if_eq this.priority 'High'}}selected{{/if_eq}} value="High">High</option>
+                </select>
+                <input onchange="sendForm(this.parentElement)" class="priority-form_checkbox" name="completed" type="checkbox"
+                       {{#if this.completed}}checked{{/if}}>
+            </form>
+            <button class="delete-button" data-id= {{this._id}} onclick="sendDelete(this)">X</button>
+        </li>
+    {{/each}}
+
+</ul>
