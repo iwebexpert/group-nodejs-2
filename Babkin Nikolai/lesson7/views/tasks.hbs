@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Tasks</title>
+</head>
+<body>
+
+{{#if err}}
+    <div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
+        <strong>{{err}}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{{/if}}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/tasks">Tasks<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/tasks/add">Add Tasks</a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<h2 class="text-center">Tasks</h2>
+
+<div>
+    {{#if tasks}}
+        {{#each tasks}}
+            <div class="row m-1 align-items-center justify-content-center">
+                <h5 class="col-3"><span>Task Name: </span>{{this.title}}</h5>
+                <h6 class="col-3"><span>Completed: </span>{{this.completed}}</h6>
+
+                <a class="col-auto btn btn-outline-primary" href="/tasks/add/{{this._id}}">Update</a>
+
+                <form class="col-auto" data-form_type="delete" data-id="{{this._id}}">
+                    <button class="btn btn-outline-primary">Delete</button>
+                </form>
+            </div>
+        {{/each}}
+    {{else}}
+        <p class="text-center">You don't have tasks
+            <a href="/tasks/add" class="btn btn-success ml-2">Add it right now</a>
+        </p>
+    {{/if}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (event.target.dataset.form_type === 'delete') {
+            fetch('/tasks/delete', {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({_id: event.target.dataset.id})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isSuccess) location.replace('/tasks')
+                    else location.replace('/tasks?err=Deletion is failed')
+                })
+                .catch(err => console.log(err))
+        }
+    })
+</script>
+</body>
+</html>
