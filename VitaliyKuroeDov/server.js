@@ -65,7 +65,7 @@ app.post('/register', async (req, res) => {
     if(restBody.password === repassword) {
         const user = new userModel(restBody)
         await user.save()
-        res.status(201).send()
+        res.status(201).send({message: 'OK'})
     } else {
         res.status(400).json({message: 'User exists'})
     }
@@ -91,6 +91,12 @@ app.post('/auth', async(req, res) => {
         token: jwt.sign(plainUser, SECRET)
     })
 })
+
+app.get('/logout', (req, res) => {
+    req.logout()
+    res.status(200).send({message: 'logout'})
+})
+
 //delete task
 app.delete('/tasks/:id', async(req, res) => {
     const { id } = req.body
