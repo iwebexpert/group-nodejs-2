@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Add Tasks</title>
+</head>
+<body>
+
+{{#if err}}
+    <div class="alert alert-danger alert-dismissible fade show fixed-top" role="alert">
+        <strong>{{err}}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{{/if}}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/tasks">Tasks<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/tasks/add">Add Tasks</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<h2 class="text-center">Add Tasks</h2>
+
+<div class="d-flex justify-content-center align-items-center">
+    <form method="post" action="/tasks/add">
+        {{#if task._id}}
+            <input type="hidden" name="_id" value="{{task._id}}">
+        {{/if}}
+        <div class="form-row align-items-center justify-content-center mt-4">
+            <div class="col-auto">
+                <input type="text" class="form-control mb-2" id="title" name="title" placeholder="Title" {{#if task}}
+                       value="{{task.title}}" {{/if}} required>
+            </div>
+            <div class="col-auto">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" name="completed" id="completed" type="checkbox"
+                        {{#if task.completed}} checked {{/if}} value="true">
+                    <label class="form-check-label" for="completed">Completed</label>
+                </div>
+            </div>
+            {{#unless task._id}}
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">Save</button>
+                </div>
+            {{/unless}}
+        </div>
+    </form>
+
+    {{#if task._id}}
+        <form class="col-auto" data-form_type="update" data-id="{{task._id}}">
+            <button class="btn btn-primary">Update</button>
+        </form>
+    {{/if}}
+
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("submit", (event) => {
+        if (event.target.dataset.form_type === 'update') {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const completed = document.getElementById('completed').checked
+
+            console.log(title)
+            if (title === '') return location.replace(location.pathname + '?err=Title must not be empty')
+
+            fetch('/tasks/update', {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    _id: event.target.dataset.id,
+                    title,
+                    completed
+                })
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.isSuccess) location.replace('/tasks')
+                        else location.replace(location.pathname + '?err=Update is failed')
+                    })
+                    .catch(err => console.log(err))
+        }
+    })
+
+</script>
+</body>
+</html>
