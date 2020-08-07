@@ -1,87 +1,8 @@
 <head>
-    <style>
-        body{
-            margin: 0 auto;
-        }
-
-        a{
-            text-decoration: none;
-        }
-        .navigation{
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .container{
-            padding: 1rem 2rem;
-            display: flex;
-            flex-direction: column;
-        }
-        .task-form{
-            display: flex;
-            padding: 1rem 1rem;
-            border-radius: 5px;
-            border: 1px solid #000;
-            margin: 0 0 1rem 0;
-        }
-
-        .task-form-rename{
-            display: flex;
-            flex-grow: 1;
-            margin: 0 .5rem 0 0 ;
-        }
-        .task-from_upd{
-            display: flex;
-            margin: 0;
-
-        }
-
-        .task-form__label{
-            display: flex;
-            justify-content: space-between;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-        .task-form__input{
-            border: 1px solid #000;
-            border-radius: 0;
-            padding: .5rem 1.5rem;
-            background-color: transparent;
-            flex-grow: 1;
-            margin: 0 1rem 0 0;
-            transition: border-radius .3s ease-in-out;
-        }
-        .task-form__input:focus{
-            border-radius: 5px;
-        }
-        .task-form__button{
-            background: transparent;
-            display: flex;
-            padding: .5rem 1rem;
-            border: 1px solid #000;
-            border-radius: 5px;
-            outline: none;
-            align-items: center;
-            align-self: flex-end;
-            justify-content: center;
-            color: #000;
-            transition: color .3s ease-in-out,
-                        background-color .3s ease-in-out,
-                        opacity .3s ease-in-out;
-        }
-
-        .task-form__button:hover{
-            background-color: #000;
-            color: #fff;
-        }
-
-        .task-form__button:active{
-            opacity: .67;
-        }
-
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <header class="header">
+    <h2 class="title">Node JS GB lesson 7</h2>
     <nav class="navigation">
         <a href="/" class="link__item">Home</a>
     </nav>

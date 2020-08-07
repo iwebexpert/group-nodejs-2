@@ -91,6 +91,17 @@ a{
     border: 1px solid #000;
 }
 
+.task-form-rename{
+    display: flex;
+    flex-grow: 1;
+    margin: 0 .5rem 0 0 ;
+    align-items: flex-end;
+}
+.task-from_upd{
+    display: flex;
+    margin: 0;
+}
+
 .task-form__label{
     display: flex;
     justify-content: space-between;
