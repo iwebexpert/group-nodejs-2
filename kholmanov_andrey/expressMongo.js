@@ -36,6 +36,30 @@ app.post('/tasks', async (req, res) => {
     res.json(isSaved)
 })
 
+app.put('/tasks', async (req, res) => {
+    const { id, title, completed } = req.body
+    const task = await taskMongoose.findById( id )
+
+    const updatedTask = {
+        title: title ? title : task.title,
+        completed: completed ? completed : task.completed,
+    }
+
+    taskMongoose.updateOne({_id: id}, updatedTask, {new: true}, function(err, task){
+        if(err) return console.log(err)
+    })
+
+    res.redirect('/tasks')
+})
+
+app.delete('/tasks', async (req, res) => {
+    await taskMongoose.findByIdAndDelete({_id: req.body.id}, function(err, task){
+        if(err) return console.log(err)
+    })
+
+    res.redirect('/tasks')
+})
+
 app.listen(4000, () => {
     console.log('The server has been started!')
 })
