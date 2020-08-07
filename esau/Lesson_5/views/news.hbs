@@ -1,0 +1,198 @@
+<style>
+    .news_item {
+        margin-bottom: 15px;
+        padding: 10px 0;
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .news_item-date {
+        font-size: 12px;
+        color: grey;
+    }
+
+    .news_item-title {
+        margin-bottom: 3px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .btn {
+        width: 100px;
+        padding: 7px;
+        border: 0;
+        cursor: pointer;
+        transition: filter .3s;
+    }
+
+    .btn:hover {
+        filter: brightness(75%);
+    }
+
+    .btn_inactive {
+        filter: brightness(75%);
+        cursor: not-allowed;
+    }
+
+    .news__add-form {
+        margin-top: 25px;
+        margin-bottom: 50px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[name="title"], input[name="description"], input[name="date"] {
+        width: 300px;
+        margin-bottom: 10px;
+        padding: 5px;
+    }
+
+    .btn__news_add {
+        width: 100%;
+        color: white;
+        background-color: green;
+    }
+
+    .btn__news_change, .btn__news_update {
+        margin-top: 5px;
+        color: white;
+        background-color: royalblue;
+    }
+
+    .btn__news_remove {
+        margin-top: 5px;
+        color: white;
+        background-color: red;
+    }
+</style>
+
+<p><a href="/logout">Logout</a></p>
+
+<form action="/" method="post" class="news__add-form">
+    <input type="text" name="title" placeholder="Title">
+    <input type="text" name="description" placeholder="Description">
+    <input type="date" name="date">
+    <button class="btn btn__news_add" type="button">Добавить новость</button>
+</form>
+
+<div class="news__list">
+{{#if news}}
+    {{#each news}}
+        <div class="news_item">
+            <input type="hidden" value="{{this.id}}">
+            <div class="news_item-date">{{this.date}}</div>
+            <div class="news_item-title">{{{this.title}}}</div>
+            <div class="news_item-description">{{{this.description}}}</div>
+            <button class="btn btn__news_change" type="button">Изменить</button>
+            <button class="btn btn__news_remove" type="button">Удалить</button>
+        </div>
+    {{/each}}
+{{else}}
+    <div class="news__empty-text">Извините, новостей нет...</div>
+{{/if}}
+</div>
+
+
+<script>
+    document.querySelector('.btn__news_add').addEventListener('click', e => {
+        toggleButton(e.target);
+        const formData = new FormData(document.forms.item(0));
+
+        for (const input of formData.values())
+        {
+            console.log(input);
+        }
+
+        fetch(`/news`, {
+            method: "POST",
+            body: formData
+        }).then(res => {
+            res.json().then(res => {
+                if (res) {
+                    window.location.reload();
+                }
+                toggleButton(e.target);
+            });
+        }).catch(err => console.log(err));
+    });
+
+    [...document.querySelectorAll('.btn__news_change')].forEach(btn =>
+            btn.addEventListener('click', e => {
+                const target = e.target;
+                if (!target.classList.contains('btn_inactive')) {
+                    const parent = target.parentElement;
+                    const id = parent.querySelector('input[type="hidden"').value;
+                    toggleButton(target);
+
+                    const dateInput = document.createElement('input');
+                    dateInput.name = 'date';
+                    dateInput.type = 'date'
+                    dateInput.value = parent.querySelector('.news_item-date').textContent;
+                    const titleInput = document.createElement('input');
+                    titleInput.name = 'title';
+                    titleInput.type = 'text';
+                    titleInput.value = parent.querySelector('.news_item-title').textContent;
+                    const descInput = document.createElement('input');
+                    descInput.name = 'description';
+                    descInput.type = 'text';
+                    descInput.value = parent.querySelector('.news_item-description').textContent;
+                    const updateBtn = document.createElement('button');
+                    updateBtn.classList.add('btn', 'btn__news_update');
+                    updateBtn.textContent = 'Обновить';
+
+                    parent.innerHTML = '';
+                    parent.append(dateInput, titleInput, descInput, updateBtn);
+
+                    updateBtn.addEventListener('click', e => {
+                        const data = {
+                            date: dateInput.value,
+                            title: titleInput.value,
+                            description: descInput.value
+                        };
+
+                        fetch(`/news/${id}`, {
+                            method: "PUT",
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(res => {
+                            res.json().then(res => {
+                                window.location.reload();
+                            });
+                        }).catch(err => console.log(err));
+                    });
+                }
+            })
+    );
+
+    [...document.querySelectorAll('.btn__news_remove')].forEach(btn => {
+        btn.addEventListener('click', e => {
+            const target = e.target;
+            if (!target.classList.contains('btn_inactive')) {
+                const parent = target.parentElement;
+                const id = parent.querySelector('input[type="hidden"').value;
+                toggleButton(target);
+
+                fetch(`/news/${id}`, {
+                    method: "DELETE",
+                }).then(res => {
+                    res.json().then(data => {
+                        if (data) {
+                            console.log(`News with ID#${id} has been deleted.`)
+                            parent.remove();
+                        }
+                    });
+                }).catch(err => console.log(err));
+            }
+        })
+    });
+
+    function toggleButton(btn) {
+        btn.classList.contains('btn_inactive')
+                ? btn.classList.remove('btn_inactive') : btn.classList.add('btn_inactive');
+    }
+</script>
