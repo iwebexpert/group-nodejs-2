@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API</title>
+    <script>
+        fetch('http://localhost:4000/tasks', {
+            // method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjI5YjQzMTIyMDZlOTE5Mzk3ODgzYTciLCJlbWFpbCI6IjVANS5ydSIsImZpcnN0TmFtZSI6Iklnb3IiLCJsYXN0TmFtZSI6IlRlc3QiLCJfX3YiOjAsImlhdCI6MTU5NjU2OTIxN30.8AF8bB6jY7Qlz62oYZeqSKQ4ktOok5-shmFXU8vC-Ac',
+            }
+        })
+        .then((response) => response.json())
+        .then((tasks) => console.log(tasks));
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
