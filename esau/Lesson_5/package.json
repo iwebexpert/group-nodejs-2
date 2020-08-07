@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "api": "nodemon rest.js"
   },
   "keywords": [],
   "author": "",
@@ -13,10 +14,12 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "consolidate": "^0.15.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.4",
     "express-session": "^1.17.1",
     "handlebars": "^4.7.6",
+    "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",
