@@ -1,0 +1,189 @@
+<script>
+    window.onload = function () {
+        if (!localStorage.gbApiKey) {
+            window.location.replace('/auth');
+        }
+
+        const list = document.querySelector('.task-list');
+
+        document.getElementById('newTaskBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('http://localhost:4000/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.gbApiKey
+                },
+                body: JSON.stringify({
+                    title: document.getElementById('taskTitle').value,
+                    priority: document.getElementById('taskPriority').value
+                })
+            }).then((response) => {
+                if (response.status !== 200) {
+                    return false
+                }
+                return response.json();
+            }).then((data) => {
+                if (data) {
+                    list.insertAdjacentElement('beforeend', createLiElement(data))
+                }
+            })
+        })
+
+        fetch('http://localhost:4000/tasks', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.gbApiKey
+            },
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if (data.length > 0) {
+                const notificationElement = document.getElementById('no-items-notify');
+                notificationElement.parentElement.removeChild(notificationElement);
+            }
+            data.forEach((item) => {
+                const li = createLiElement(item);
+                list.insertAdjacentElement('beforeend', li)
+            })
+        })
+    };
+
+    function controlChangeHandler(e) {
+        const body = {
+            completed: e.target.parentElement.querySelector('.priority-form_checkbox').checked ? 'on' : 'off'
+        }
+        if (e.target.type !== 'checkbox') {
+            body.priority = e.target.value;
+        }
+
+        fetch('http://localhost:4000/tasks/' + e.target.dataset.id, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.gbApiKey
+            },
+            body: JSON.stringify(body)
+        })
+    }
+
+    function deleteTaskHandler(e) {
+        fetch('http://localhost:4000/tasks/' + e.target.dataset.id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.gbApiKey
+            },
+        }).then((response) => {
+            return response.status === 200;
+
+        }).then((result) => {
+            if (result) {
+                console.log(e.target.parentElement);
+                const ul = e.target.parentElement.parentElement;
+                ul.removeChild(e.target.parentElement);
+            }
+        })
+    }
+
+    function createLiElement(task) {
+        let li = document.createElement('li');
+        li.classList.add('task-list__row');
+        li.style.listStyleType = 'none';
+        li.innerHTML = `
+            <a class="task-form__title task-form__control" href="/tasks/update/${task._id}">${task.title}</a>
+            <form class="priority-form" method="post" action="/tasks/${task._id}">
+                <select class="task-form__control priority-selector" data-id=${task._id} name="priority">
+                    <option ${task.priority === 'Low' ? 'selected' : ''} value="Low">Low</option>
+                    <option ${task.priority === 'Normal' ? 'selected' : ''} value="Normal">Normal</option>
+                    <option ${task.priority === 'High' ? 'selected' : ''} value="High">High</option>
+                </select>
+                <input class="priority-form_checkbox" data-id=${task._id} name="completed" type="checkbox"
+                       ${task.completed ? 'checked' : ''}>
+            </form>
+            <button class="delete-button" data-id=${task._id}>X</button>
+                `
+        li.querySelector(`select`).addEventListener("change", controlChangeHandler);
+        li.querySelector(`.priority-form_checkbox`).addEventListener("change", controlChangeHandler);
+        li.querySelector(`.delete-button`).addEventListener("click", deleteTaskHandler);
+        return li;
+    }
+
+
+</script>
+<style>
+    .form-placeholder {
+        display: block;
+        width: 10px;
+    }
+
+    .task-form {
+        display: flex;
+        width: 430px;
+        justify-content: space-between;
+    }
+
+    .task-form__control {
+        height: 22px;
+    }
+
+    .task-form__title {
+        width: 250px;
+        display: block;
+        border: 1px solid #000;
+        box-sizing: border-box;
+    }
+
+    .priority-form {
+        margin: 0;
+        padding: 0;
+        width: 137px;
+        display: flex;
+        #justify-content: space-between;
+        align-items: center;
+    }
+
+    .priority-form_checkbox {
+        margin: 0 0 0 5px;
+        padding: 5px 0 0 0;
+        width: 15px;
+        height: 15px;
+    }
+
+    .task-form__submit {
+        width: 80px;
+    }
+
+    .task-list {
+        width: 430px;
+        padding: 0;
+    }
+
+    .task-list__row {
+        padding: 0;
+        margin: 0 0 10px 0;
+        height: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    .delete-button {
+        height: 22px;
+    }
+</style>
+<a href="/auth/logout">Выход</a>
+<p id="no-items-notify">Пока нет ни одного задания</p>
+<form class="task-form" method="post" action="/tasks">
+    <input class="task-form__control task-form__title" id="taskTitle" name="title" type="text">
+    <select class="taks-form__control" id="taskPriority" name="priority">
+        <option value="Low">Low</option>
+        <option selected value="Normal">Normal</option>
+        <option value="High">High</option>
+    </select>
+    <div class="form-placeholder"></div>
+    <button class="task-form__submit" id="newTaskBtn" type="submit">Создать</button>
+</form>
+<ul class="task-list"></ul>
