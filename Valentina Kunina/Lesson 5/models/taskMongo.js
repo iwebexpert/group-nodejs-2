@@ -6,6 +6,8 @@ const Schema = mongoose.Schema; // Берем схему из mongoose
 const taskSchema = new Schema({
   title: { type: String, required: true },
   completed: { type: Boolean, default: false },
+  delete: { type: Boolean, default: false },
+  edit: { type: Boolean, default: false },
 });
 
-module.exports = mongoose.model('Task', taskSchema, 'tasks'); // модель с большой буквы, коллекция - с маленькой
+module.exports = mongoose.model("Task", taskSchema, "tasks"); // модель с большой буквы, коллекция - с маленькой и называется 'tasks'
