@@ -1,0 +1,45 @@
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .auth-form {
+        margin: 0 auto;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-control-row {
+        display: flex;
+        justify-content: space-between;
+    }
+    .auth-form__control {
+        margin-bottom: 15px;
+        width: 300px;
+    }
+
+    .auth-form__submit {
+        width: 200px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container">
+    {{#if error}}
+        <p>Логин или пароль указаны неверно</p>
+    {{/if}}
+    <form class="auth-form" method="post" action="/auth">
+        <h2>Авторизация</h2>
+        <div class="form-control-row">
+            <label for="email">E-mail</label>
+            <input class="auth-form__control" id="email" name="email" type="email">
+        </div>
+        <div class="form-control-row">
+            <label for="password">Password</label>
+            <input class="auth-form__control" id="password" name="password" type="password">
+        </div>
+        <button class="auth-form__submit" type="submit">Войти</button>
+    </form>
+</div>

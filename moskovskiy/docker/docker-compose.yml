@@ -1,5 +1,15 @@
 version: '3'
 services:
+  mongo:
+    container_name: mongo
+    restart: unless-stopped
+    hostname: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+    - ./mongo/data/db/:/var/lib/mongodb
+
   mysql:
     container_name: mysql
     image: mysql:latest

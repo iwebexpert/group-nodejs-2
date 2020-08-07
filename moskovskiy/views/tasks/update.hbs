@@ -1,0 +1,13 @@
+<h2>Редактирование задачи</h2>
+
+<form method="post" action="/tasks/{{task._id}}">
+    <input type="text" name="title" value="{{task.title}}">
+    <select name="priority">
+        <option {{#if_eq task.priority 'Low'}}selected{{/if_eq}} value="Low">Low</option>
+        <option {{#if_eq task.priority 'Normal'}}selected{{/if_eq}} value="Normal">Normal</option>
+        <option {{#if_eq task.priority 'High'}}selected{{/if_eq}} value="High">High</option>
+    </select>
+    <input name="completed" type="checkbox" {{#if task.completed}}checked{{/if}}>
+    <input type="submit" value="Сохранить">
+</form>
+<button onclick="window.location.replace('/tasks')">Отмена</button>
