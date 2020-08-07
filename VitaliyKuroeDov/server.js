@@ -61,13 +61,16 @@ app.get('/tasks/:id', async (req, res) => {
 //registation
 app.post('/register', async (req, res) => {
     const {repassword, ...restBody} = req.body
-    
-    if(restBody.password === repassword) {
+    const loginCheck = await userModel.findOne({email: restBody.email})
+
+    if (loginCheck) {
+        res.status(400).json({message: 'user exists'})
+    } else if (restBody.password === repassword) {
         const user = new userModel(restBody)
         await user.save()
         res.status(201).send({message: 'OK'})
     } else {
-        res.status(400).json({message: 'User exists'})
+        res.status(400).json({message: 'password not macth'})
     }
 })
 //login
@@ -76,11 +79,11 @@ app.post('/auth', async(req, res) => {
     const user = await userModel.findOne({email})
 
     if(!user) {
-        return res.status(401).send()
+        return res.status(401).send({error: 1})
     }
 
     if(!user.validatePassword(password)){
-        return res.status(401).send()
+        return res.status(401).send({error: 1})
     }
 
     const plainUser = JSON.parse(JSON.stringify(user))
@@ -107,6 +110,30 @@ app.delete('/tasks/:id', async(req, res) => {
         res.status(200).send({message: `${id} is deleted`})
     } else {
         res.status(400).send({message: `${id} not found`})
+    }
+})
+//get user info
+app.post('/user', async(req, res) => {
+    const user = req.body.email
+    const targetUser = await userModel.findOne({email: user})
+    const plainUser = JSON.parse(JSON.stringify(targetUser))
+    delete plainUser.password
+
+    if (targetUser) {
+        res.status(200).send( {message: 'OK', plainUser } )
+    }
+})
+//update profile
+app.patch('/profile', async(req, res) => {
+    const {email , firstName, lastName } = req.body
+    const targetUser = await userModel.findOne({email: email})
+    if (targetUser) {
+        await userModel.updateOne({email: email}, {
+            $set: { firstName, lastName }
+        })
+        res.status(201).send({message: 'OK', targetUser})
+    } else {
+        res.status(400).send({message: 'error'})
     }
 })
 //update task
