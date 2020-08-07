@@ -1,0 +1,52 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<header class="header">
+    <h2 class="title">Node JS GB lesson 7</h2> 
+
+    <nav class="navigation">
+        <a href="/" class="link__item" >Главная</a>
+        {{#if user}}
+            <a href="/register" class="link__item">register</a>
+            <a href="/auth" class="link__item">Authorization</a>
+        {{/if}}
+        {{#unless user}}
+            <a href="/logout" class="link__item">Logout</a>
+        {{/unless}}
+    </nav>
+</header>
+<section class="container">
+
+     <form action="/tasks" method="POST" class="task-form">
+        <label for="" class="task-form__label">
+            <span class="task-form__text">Set new Task name: </span>
+            <input class="task-form__input" type="text" name="title" id="">
+        </label>
+        <input class="task-form__button" type="submit" name="" id="" value="Send">
+    </form>
+    <h2 class="title">TaskList</h2>
+
+    <div class="card-list">
+
+        {{#each tasksList }} 
+            <div class="card">
+                {{#if this.complited}}
+                    <a class="card-link complited" href="/tasks/{{_id}}">
+                {{/if}}
+                {{#unless this.complited}}
+                    <a class="card-link " href="/tasks/{{_id}}">
+                {{/unless}}
+
+                    <span class="card__item card__id">ID: {{this._id}}</span>
+                    <span class="card__item card__title">Title: {{this.title}}</span>
+                    <span class="card__item card__text">Status: 
+                        {{#if this.complited}}Выполнено{{/if}}
+                        {{#unless this.complited}}Не Выполнено{{/unless}}
+                    </span>
+                </a>
+                <button type="submit" class="card-button" id="delete" onclick="deleteRecord(`{{this._id}}`)" >Delete</button>
+            </div>
+        {{/each}}
+    </div>
+</section>
+<script src="script.js"></script>

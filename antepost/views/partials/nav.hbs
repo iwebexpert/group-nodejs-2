@@ -1,0 +1,33 @@
+<nav>
+    <ul class="nav-menu">
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/news">News</a>
+        </li>
+        <li>
+            <a href="/tasks">Tasks</a>
+        </li>
+        <li>
+            <a href="/tasks/history">History of tasks</a>
+        </li>
+    </ul>
+    <ul class="auth-menu">
+        {{#if email}}
+        <li>
+            You're logged in as '{{email}}'
+        </li>
+        <li>
+            <a href="/logout">Log out</a>
+        </li>
+        {{else}}
+        <li>
+            <a href="/register">Sign up</a>
+        </li>
+        <li>
+            <a href="/auth">Log in</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>

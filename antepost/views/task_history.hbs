@@ -1,0 +1,42 @@
+<h1>History of <span>all tasks</span></h1>
+{{#if tasksHistory}}
+<label for="filter">Filter by id:</label>
+<select name="filter" id="filter">
+    <option value="all">All</option>
+    {{#each uniqueDocumentsId}}
+    <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+<button onclick="handleFilterDocuments()">Filter documents by id</button>
+<br>
+<button onclick="handleDeleteAllHistory()">Delete all history (WARNING)</button>
+<br>
+{{/if}}
+<table class="history-table">
+    <thead>
+        <tr>
+            <th>Document id</th>
+            <th>Change date</th>
+            <th>Changed field</th>
+            <th>Old value</th>
+            <th>New value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#if tasksHistory}}
+        {{#each tasksHistory}}
+        <tr>
+            <td>{{this.changed_document_id}}</td>
+            <td>{{this.change_date}}</td>
+            <td>{{#if this.changed_field}}{{this.changed_field}}{{else}}document {{this.create_delete}}{{/if}}</td>
+            <td>{{this.old_value}}</td>
+            <td>{{this.new_value}}</td>
+        </tr>
+        {{/each}}
+        {{else}}
+        <tr>
+            <td colspan="6">There is no history</td>
+        </tr>
+        {{/if}}
+    </tbody>
+</table>

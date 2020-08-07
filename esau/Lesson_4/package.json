@@ -1,0 +1,25 @@
+{
+  "name": "Lesson_4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^14.0.26",
+    "cheerio": "^1.0.0-rc.3",
+    "consolidate": "^0.15.1",
+    "cookie": "^0.4.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.6",
+    "request": "^2.88.2",
+    "twig": "^1.15.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

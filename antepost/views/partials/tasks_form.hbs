@@ -1,0 +1,12 @@
+<form action="/tasks/{{actionAddition}}" method="post" class="settings-form">
+    <label for="title">Choose a name for the task:</label>
+    <input type="text" name="title" id="title" required value={{title}}>
+    <br>
+
+    <label for="completed">Is this task completed:</label>
+    <input type="checkbox" name="completed" id="completed" value="1" {{#if completed}}checked{{/if}}>
+    <br>
+    <input type="submit">
+
+    <input type="hidden" name="_method" value={{method}}>
+</form>

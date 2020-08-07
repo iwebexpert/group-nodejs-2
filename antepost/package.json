@@ -1,0 +1,38 @@
+{
+  "name": "antepost",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@netilon/differify": "^3.2.1",
+    "bcryptjs": "^2.4.3",
+    "chalk": "^4.1.0",
+    "cheerio": "^1.0.0-rc.3",
+    "connect-mongo": "^3.2.0",
+    "consolidate": "^0.15.1",
+    "cookie": "^0.4.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.1.0",
+    "express-session": "^1.17.1",
+    "handlebars": "^4.7.6",
+    "is-valid-path": "^0.1.1",
+    "iso-language-codes": "^1.0.7",
+    "jzz": "^1.0.8",
+    "method-override": "^3.0.0",
+    "minimist": "^1.2.5",
+    "mongoose": "^5.9.26",
+    "morsee": "^1.0.6",
+    "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "promise-prompt": "^1.1.1",
+    "request": "^2.88.2"
+  }
+}

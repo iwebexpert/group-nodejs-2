@@ -1,0 +1,18 @@
+<h1>Register to gain access to task functionality</h1>
+{{#if err}}
+<p class="error">{{err}}</p>
+{{/if}}
+<form action="/register" method="post" class="settings-form">
+    <label for="email">Enter email to register:</label>
+    <input type="email" name="email" id="emial">
+    <br>
+
+    <label for="password">Enter password to register:</label>
+    <input type="password" name="password" id="password">
+    <br>
+
+    <label for="repassword">Repeat password:</label>
+    <input type="password" name="repassword" id="repassword">
+    <br>
+    <input type="submit">
+</form>

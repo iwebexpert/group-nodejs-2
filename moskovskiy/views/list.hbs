@@ -1,0 +1,8 @@
+{{#if list}}
+    {{#each list}}
+        <h1>{{this.title}}</h1>
+        <p>{{this.origin}}</p>
+    {{/each}}
+{{^}}
+    <p>Новости не найдены</p>
+{{/if}}
