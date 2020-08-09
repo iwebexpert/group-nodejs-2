@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const SECRET_KEY = 'fjhgdsjfhgduitgfuiytruyewfdsdsfh231445'
 
-mongoose.connect('mongodb://localhost:32768/todo', {
+mongoose.connect('mongodb://localhost:27017/todo', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -62,13 +62,13 @@ app.get('/tasks/:id', async (req, res) => {
 })
 
 //TODO
-app.delete('/tasks/:id', async (req, res) => {
+app.delete('/tasks', async (req, res) => {
     const { id } = req.body
     await taskModel.findByIdAndRemove(id)
-    res.status(200)
+    res.status(200).send()
 })
 
-app.patch('/tasks/:id', async (req, res) => {
+app.patch('/tasks', async (req, res) => {
     const { id, title, completed } = req.body
     const task = await taskModel.findById( id )
 
@@ -81,7 +81,7 @@ app.patch('/tasks/:id', async (req, res) => {
         if(err) return res.status(400).json({message: 'the task is not updated!'})
     })
 
-    res.status(200)
+    res.status(200).send()
 })
 
 //Для авторизации и регистрации
@@ -98,7 +98,7 @@ app.post('/register', async (req, res) => {
 
 app.post('/auth', async (req, res) => {
     const { email, password } = req.body
-    console.log(req.body)
+
     const user = await userModel.findOne({email})
 
     if(!user){
