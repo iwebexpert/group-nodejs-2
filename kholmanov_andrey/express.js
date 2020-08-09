@@ -135,6 +135,6 @@ app.get('/logout', (req, res) => {
     res.redirect('/auth')
 })
 
-app.listen(4000, () => {
+app.listen(5000, () => {
     console.log('The server has been started!')
 })
