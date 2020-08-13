@@ -1,0 +1,96 @@
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .register-form {
+        margin: 0 auto;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-control-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .register-form__control {
+        margin-bottom: 15px;
+        width: 300px;
+    }
+
+    .register-form__button {
+        width: 100px;
+        margin: 0;
+    }
+
+    .buttons-container {
+        display: flex;
+        justify-content: space-around;
+        width: 300px;
+        margin-left: auto;
+    }
+</style>
+
+<script>
+    window.onload = function () {
+        const submitBtn = document.getElementById('submitBtn');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('errorMessage');
+
+
+        submitBtn.addEventListener("click", (e) => {
+            errorMessage.innerText = '';
+            e.preventDefault();
+            fetch('http://localhost:4000/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailInput.value,
+                    password: passwordInput.value
+                })
+            }).then((response) => {
+                if (response.status !== 200) {
+                    return false
+                }
+                return response.json();
+            }).then((data) => {
+                if (data) {
+                    localStorage.gbApiKey = data.token;
+                    window.location.replace('/tasks');
+                } else {
+                    errorMessage.innerText = "Неправильный логин или пароль"
+                }
+            })
+        })
+    };
+</script>
+
+<div class="container">
+
+    <form class="register-form" method="post" action="#">
+        <h2>Авторизация</h2>
+        <p id="errorMessage" style="color:red"></p>
+        <div class="form-control-row">
+            <label for="email">E-mail</label>
+            <input class="register-form__control" id="email" name="email" type="email">
+        </div>
+        <div class="form-control-row">
+            <label for="password">Password</label>
+            <input class="register-form__control" id="password" name="password" type="password">
+        </div>
+        <div class="form-control-row ">
+            <div class="buttons-container">
+                <button class="register-form__button" id="submitBtn" type="submit">Log In</button>
+                <button class="register-form__button" type="button" onclick="window.location.replace('/signup')">
+                    Register
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
