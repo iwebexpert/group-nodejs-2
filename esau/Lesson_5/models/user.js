@@ -65,9 +65,7 @@ class User {
                             const data = JSON.parse(JSON.stringify(rawData));
 
                             conn.release();
-                            resolve(data[0]);
-                        } else {
-                            resolve({});
+                            data.length ? resolve(data[0]) : resolve(null);
                         }
                     })
             })
