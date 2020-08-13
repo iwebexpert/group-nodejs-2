@@ -1,0 +1,17 @@
+<a href="/logout">Выход</a>
+<div>
+    <h1>Задачи</h1>
+    <a href="/task/add">Добавить задачу</a>
+    <ul>
+        {{#each tasks}}
+            <li>
+                {{#if this.completed}}<b>[выполнено]</b>{{/if}} <a href="/task/{{this._id}}">{{this.title}}</a>
+                <a href="/task/edit/{{this._id}}">Редактировать</a>
+                <form method="POST" action="/task/remove">
+                    <input type="hidden" value="{{this._id}}" name="id" />
+                    <input type="submit" value="Удалить" />
+                </form>
+            </li>
+        {{/each}}
+    </ul>
+</div>

@@ -1,0 +1,8 @@
+<form method="POST" action="/task/{{#if task}}update{{else}}create{{/if}}">
+    <input type="hidden" value="{{task._id}}" name="id" />
+    <input type="text" value="{{task.title}}" name="title" placeholder="Введите название" />
+    {{#if task}}
+        <input type="checkbox" value="true" name="completed" {{#if task.completed}}checked="checked"{{/if}} /> выполнено
+    {{/if}}
+    <input type="submit" value="Сохранить" />
+</form>

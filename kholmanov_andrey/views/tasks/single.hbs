@@ -1,0 +1,6 @@
+{{#if task.completed}}<b>[выполнено]</b>{{/if}} {{task.title}}
+<a href="/task/edit/{{task._id}}">Редактировать</a>
+<form method="POST" action="/task/remove">
+    <input type="hidden" value="{{task._id}}" name="id" />
+    <input type="submit" value="Удалить" />
+</form>
