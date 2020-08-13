@@ -3,6 +3,8 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const config = require('./config')
+const socketIO = require('socket.io')
+const http = require('http')
 
 const SECRET = "XCvRTKVxa9km4HEtH9f2Jv88W7uj4MHF4zFpJqTVjYdCwFA7p9"
 
@@ -18,6 +20,9 @@ const passport = require('./auth')
 const { json } = require('express')
 
 const app = express()
+
+const server = http.Server(app)
+const io = socketIO(server)
 
 app.use(express.json())
 app.use(cors())
@@ -39,6 +44,70 @@ const checkAuth = (req, res, next) => {
         return res.status(403).send()
     }
 }
+
+io.on('connection', (socket) => {
+    console.log('new client connection!')
+    
+    socket.on('login', async (data) => {
+        const { email, password } = data
+        const user = await userModel.findOne({email})
+        
+        if(!user) {
+            socket.emit('checkLogin', { error: 'user not exist' })
+        }
+    
+        // if(!user.validatePassword(password)) {
+        //     socket.emit('checkLogin', { error: 'passowrd is wrong' })
+        // }
+    
+        const plainUser = JSON.parse(JSON.stringify(user))
+        delete plainUser.password
+
+        socket.emit('checkLogin', {
+            ...plainUser,
+            token: jwt.sign(plainUser, SECRET)
+        })
+    })
+
+    socket.on('createTask', async(data) => {
+        console.log(data)
+        const task = new taskModel(data)
+        const isSaved = await task.save()
+        
+        io.sockets.emit('cbCreateTask', isSaved)
+        // socket.broadcast.emit(`created: ${saveTask._id}`, saveTask)
+        // socket.emit(`created: ${saveTask._id}`, saveTask)
+    })
+
+    socket.on('deleteTask', async(data) => {
+        const { id } = data
+        const targetTask = await taskModel.findById(id)
+        console.log(data)
+        console.log(targetTask)
+        if(targetTask) {
+            await taskModel.deleteOne(targetTask)
+            io.sockets.emit('cbDeleteTask', { message: `${id} удалена`, error: false})
+        } else {
+            io.sockets.emit('cbDeleteTask', { message: `${id} не найдена`, error: true})
+        }
+    })
+
+    socket.on('toogle', async(taskId) => {
+        const task = await taskModel.findById(taskId)
+        await taskModel.findByIdAndUpdate(
+            { _id: taskId }, 
+            { $set: {complited: !task.complited }})
+
+        socket.broadcast.emit(`toggled: ${taskId}`, taskId)
+        socket.emit(`toggled: ${taskId}`, taskId)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('client has disconnected!')
+    })
+
+})
+
 
 app.use('/tasks', checkAuth)
 //get task
@@ -154,6 +223,10 @@ app.patch('/tasks/:id', async(req, res) => {
     }
 })
 
-app.listen(config.port, () => {
+// app.listen(config.port, () => {
+//     console.log(`Server stat in ${config.port}`)
+// })
+
+server.listen(config.port, () => {
     console.log(`Server stat in ${config.port}`)
 })
