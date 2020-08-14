@@ -39,7 +39,6 @@ const checkAuth = (req, res, next) => {
             req.user = decoded
             next()
         })
-
     } else {
         return res.status(403).send()
     }
@@ -47,19 +46,17 @@ const checkAuth = (req, res, next) => {
 
 io.on('connection', (socket) => {
     console.log('new client connection!')
-    
+    //login
     socket.on('login', async (data) => {
         const { email, password } = data
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({ email })
         
         if(!user) {
-            socket.emit('checkLogin', { error: 'user not exist' })
+            socket.emit('checkLogin', { login: email, error: true, text: 'user not exist' })
         }
-    
-        // if(!user.validatePassword(password)) {
-        //     socket.emit('checkLogin', { error: 'passowrd is wrong' })
-        // }
-    
+        if(!user.validatePassword(password)) {
+           await socket.emit('checkLogin', { login: email, error: true, error: 'passowrd is wrong' })
+        }
         const plainUser = JSON.parse(JSON.stringify(user))
         delete plainUser.password
 
@@ -68,164 +65,112 @@ io.on('connection', (socket) => {
             token: jwt.sign(plainUser, SECRET)
         })
     })
-
+    //create
     socket.on('createTask', async(data) => {
-        console.log(data)
         const task = new taskModel(data)
         const isSaved = await task.save()
         
         io.sockets.emit('cbCreateTask', isSaved)
-        // socket.broadcast.emit(`created: ${saveTask._id}`, saveTask)
-        // socket.emit(`created: ${saveTask._id}`, saveTask)
     })
-
+    //delete
     socket.on('deleteTask', async(data) => {
-        const { id } = data
+        const id = data
         const targetTask = await taskModel.findById(id)
-        console.log(data)
-        console.log(targetTask)
         if(targetTask) {
             await taskModel.deleteOne(targetTask)
-            io.sockets.emit('cbDeleteTask', { message: `${id} удалена`, error: false})
+            socket.emit('cbDeleteTask', { id, message: `удалена`, error: false })
         } else {
-            io.sockets.emit('cbDeleteTask', { message: `${id} не найдена`, error: true})
+            socket.emit('cbDeleteTask', { id, message: `не найдена`, error: true })
         }
     })
+    //modify
+    socket.on('modifyTask', async(data) => {
+        const { id, title, complited } = data
+        const targetTask = await taskModel.findById(id)
 
-    socket.on('toogle', async(taskId) => {
-        const task = await taskModel.findById(taskId)
-        await taskModel.findByIdAndUpdate(
-            { _id: taskId }, 
-            { $set: {complited: !task.complited }})
-
-        socket.broadcast.emit(`toggled: ${taskId}`, taskId)
-        socket.emit(`toggled: ${taskId}`, taskId)
+        if(targetTask) {
+            await taskModel.updateOne({ _id: id }, { $set: { title, complited } })
+            socket.emit('cbModifyTask', { id, message: `task is updated`, error: false })
+        } else {
+            socket.emit('cbModifyTask', { id, message: `task is not updated`, error: true })
+        }
     })
+    //get tasks
+    socket.on('getTasks', async(data) => {
+        if(data.get) {
+            const tasksList = await taskModel.find({}).lean()
+            socket.emit('cbGetTasks', tasksList)
+        }
+    })
+    //get task by id
+    socket.on('getTaskById', async(data) => {
+        const { id } = data
+        const task = await taskModel.findById(id)
+        socket.emit('cbGetTaskById', task)
+    })
+    //registration
+    socket.on('registration', async(data) => {
+        const {repassword, ...restBody} = data
+        const loginCheck = await userModel.findOne({ email: restBody.email })
 
+        if (loginCheck) {
+            socket.emit('cbRegistation', { login: restBody.email, message: `login is exist`, error: true })
+        } else if (restBody.password === repassword) {
+            const user = new userModel(restBody)
+            await user.save()
+            socket.emit('cbRegistation', { login: restBody.email, message: `registration ok`, error: false })
+        } else {
+            socket.emit('cbRegistation', { login: restBody.email, message: `password not match`, error: true })
+        }
+    })
+    //get user info
+    socket.on('userInfo', async(data) => {
+        const user = data.email
+        const targetUser = await userModel.findOne({ email: user })
+        const plainUser = JSON.parse(JSON.stringify(targetUser))
+        delete plainUser.password
+
+        if (targetUser) {
+            socket.emit('cbUserInfo', { message: 'OK', error: false, plainUser })
+        } else {
+            socket.emit('cbUserInfo', { message: 'not found', error: true, user })
+        }
+    })
+    //update profile
+    socket.on('updateUser', async(data) => {
+
+        const {email , firstName, lastName } = data
+        const targetUser = await userModel.findOne({ email: email })
+        if (targetUser) {
+            await userModel.updateOne({ email: email }, {
+                $set: { firstName, lastName }
+            })
+            await socket.emit('cbUpdateUser', { message: 'user is updated', error: false, targetUser })
+        } else {
+            socket.emit('cbUpdateUser', { message: 'user is not updated', error: true, login: email })
+        }
+    })
+    //disconnect
     socket.on('disconnect', () => {
         console.log('client has disconnected!')
     })
-
 })
-
 
 app.use('/tasks', checkAuth)
 //get task
-app.get('/tasks', async (req, res) => {
-    const tasksList = await taskModel.find({}).lean()
-    res.status(200).json(tasksList)
-})
 //save new task
-app.post('/tasks', async (req, res) => {
-    const task = new taskModel(req.body)
-    const isSaved = await task.save()
-    res.status(201).json(isSaved)
-})
-
 //get task by id
-app.get('/tasks/:id', async (req, res) => {
-    const task = await taskModel.findById(req.params.id)
-    res.status(200).json(task)
-})
 //registation
-app.post('/register', async (req, res) => {
-    const {repassword, ...restBody} = req.body
-    const loginCheck = await userModel.findOne({email: restBody.email})
-
-    if (loginCheck) {
-        res.status(400).json({message: 'user exists'})
-    } else if (restBody.password === repassword) {
-        const user = new userModel(restBody)
-        await user.save()
-        res.status(201).send({message: 'OK'})
-    } else {
-        res.status(400).json({message: 'password not macth'})
-    }
-})
 //login
-app.post('/auth', async(req, res) => {
-    const { email, password } = req.body
-    const user = await userModel.findOne({email})
-
-    if(!user) {
-        return res.status(401).send({error: 1})
-    }
-
-    if(!user.validatePassword(password)){
-        return res.status(401).send({error: 1})
-    }
-
-    const plainUser = JSON.parse(JSON.stringify(user))
-    delete plainUser.password
-
-    res.status(200).json({
-        ...plainUser,
-        token: jwt.sign(plainUser, SECRET)
-    })
-})
+//delete task
+//get user info
+//update profile
+//update task
 
 app.get('/logout', (req, res) => {
     req.logout()
-    res.status(200).send({message: 'logout'})
+    res.status(200).send({ message: 'logout', error: false })
 })
-
-//delete task
-app.delete('/tasks/:id', async(req, res) => {
-    const { id } = req.body
-    const targetTask = await taskModel.findById(id)
-
-    if(targetTask) {
-        await taskModel.deleteOne(targetTask)
-        res.status(200).send({message: `${id} is deleted`})
-    } else {
-        res.status(400).send({message: `${id} not found`})
-    }
-})
-//get user info
-app.post('/user', async(req, res) => {
-    const user = req.body.email
-    const targetUser = await userModel.findOne({email: user})
-    const plainUser = JSON.parse(JSON.stringify(targetUser))
-    delete plainUser.password
-
-    if (targetUser) {
-        res.status(200).send( {message: 'OK', plainUser } )
-    }
-})
-//update profile
-app.patch('/profile', async(req, res) => {
-    const {email , firstName, lastName } = req.body
-    const targetUser = await userModel.findOne({email: email})
-    if (targetUser) {
-        await userModel.updateOne({email: email}, {
-            $set: { firstName, lastName }
-        })
-        res.status(201).send({message: 'OK', targetUser})
-    } else {
-        res.status(400).send({message: 'error'})
-    }
-})
-//update task
-app.patch('/tasks/:id', async(req, res) => {
-    const { id, title, complited } = req.body
-    const targetTask = await taskModel.findById(id)
-
-    if(targetTask) {
-        await taskModel.updateOne({ _id: id }, {
-            $set: {
-                title,
-                complited
-            }
-        })
-        res.status(200).send({message: `${id} task is updated`})
-    } else {
-        res.status(400).send({message: `${id} task is not found`})
-    }
-})
-
-// app.listen(config.port, () => {
-//     console.log(`Server stat in ${config.port}`)
-// })
 
 server.listen(config.port, () => {
     console.log(`Server stat in ${config.port}`)
