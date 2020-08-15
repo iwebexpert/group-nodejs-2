@@ -46,6 +46,22 @@ const checkAuth = (req, res, next) => {
 
 io.on('connection', (socket) => {
     console.log('new client connection!')
+
+    socket.on('checkAuth', async(data) => {
+        if(data){
+            const { type, token } = data.auth
+            jwt.verify(token, SECRET, (error, decoded) => {
+                if(error){
+                    socket.emit('cbCheckAuth', { error: true, message: 'Ошибка расшифровки'})
+                }
+                data.login = decoded
+            })
+        } else {
+            socket.emit('cbCheckAuth', { error: true, message: 'нет данных'})
+        }
+        socket.emit('cbCheckAuth', { error: false, message: 'ok', user: data.login })
+    })
+
     //login
     socket.on('login', async (data) => {
         const { email, password } = data
@@ -54,9 +70,9 @@ io.on('connection', (socket) => {
         if(!user) {
             socket.emit('checkLogin', { login: email, error: true, text: 'user not exist' })
         }
-        if(!user.validatePassword(password)) {
-           await socket.emit('checkLogin', { login: email, error: true, error: 'passowrd is wrong' })
-        }
+        // if(!user.validatePassword(password)) {
+        //    await socket.emit('checkLogin', { login: email, error: true, error: 'passowrd is wrong' })
+        // }
         const plainUser = JSON.parse(JSON.stringify(user))
         delete plainUser.password
 
