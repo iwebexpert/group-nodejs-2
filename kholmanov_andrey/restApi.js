@@ -2,6 +2,9 @@ const express = require('express')
 const cors = require('cors') //TODO
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const socketIO = require('socket.io')
+const http = require('http')
+const path = require('path')
 
 const SECRET_KEY = 'fjhgdsjfhgduitgfuiytruyewfdsdsfh231445'
 
@@ -16,6 +19,11 @@ const userModel = require('./models/user')
 const passport = require('./auth')
 
 const app = express()
+
+//Создаем сервер
+const server = http.Server(app)
+const io = socketIO(server)
+
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cors())
@@ -40,6 +48,15 @@ const checkAuth = (req, res, next) => {
 }
 
 app.use('/tasks', checkAuth)
+
+//Для клиентской части
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'index.html'))
+})
+
+app.get('/auth', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'auth.html'))
+})
 
 //Методы для обработки запросов
 app.get('/tasks', async (req, res) => {
@@ -118,6 +135,36 @@ app.post('/auth', async (req, res) => {
     })
 })
 
-app.listen(4000, () => {
+io.on('connection', (socket) => {
+    console.log('New connection!')
+
+    socket.on('create', async (data) => {
+        console.log('create event')
+        const task = new taskModel(data)
+        const savedTask = await task.save()
+
+        socket.broadcast.emit(`created`, savedTask) //all, кроме нас
+        socket.emit(`created`, savedTask) //Только для 1 соединения
+    })
+
+    socket.on('toggle', async (taskId) => {
+        console.log('toggle event')
+        const task = await taskModel.findById(taskId)
+        await taskModel.findOneAndUpdate({_id: taskId}, {$set: {completed: !task.completed}})
+
+        socket.broadcast.emit(`toggled`, taskId) //all, кроме нас
+        socket.emit(`toggled`, taskId) //Только для 1 соединения
+    })
+
+    socket.on('disconnect', () => {
+        console.log('Client has disconnected!')
+    })
+})
+
+// app.listen(4000, () => {
+//     console.log('The server has been started!')
+// })
+
+server.listen(4000, () => {
     console.log('The server has been started!')
 })

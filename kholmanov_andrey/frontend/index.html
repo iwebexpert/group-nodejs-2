@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Websocket</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Websocket</h1>
+    <ul id="list"></ul>
+    <input type="button" id="create" value="Создать задачу">
+    <script>
+        const $list = document.querySelector('#list');
+        const $create = document.querySelector('#create');
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+
+        if(!token){
+            window.location = '/auth';
+        }
+
+        const socket = io.connect(`http://localhost:4000?token=${token}`);
+
+        socket.on(`created`, (task) => {
+            const $li = document.createElement('li');
+            const $button = document.createElement('button');
+            $button.textContent = task.completed ? 'Отменить выполнение' : 'Выполнить';
+
+            $li.dataset.id = task._id;
+            $li.textContent = task.title;
+            $li.appendChild($button);
+            $list.appendChild($li);
+        });
+
+        socket.on(`toggled`, (taskId) => {
+            const $button = document.querySelector(`[data-id="${taskId}"] > button`);
+            if($button){
+                $button.textContent = ($button.textContent === 'Отменить выполнение') ? 'Выполнить' : 'Отменить выполнение';
+            }
+        });
+
+        $list.addEventListener('click', (event) => {
+            if(event.target.tagName === 'BUTTON'){
+                const $li = event.target.parentElement;
+                const id = $li.dataset.id;
+
+                socket.emit('toggle', id);
+            }
+        });
+
+        $create.addEventListener('click', (event) => {
+            socket.emit('create', {
+                title: prompt('Введите название задачи'),
+                completed: false,
+                user: user._id
+            });
+
+            event.preventDefault();
+        });
+
+        //Получаем задачи
+        fetch('/tasks', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+        .then((response) => {
+            if(response.status !== 200){
+                localStorage.removeItem('token');
+                window.location = '/auth';
+                return null;
+            }
+            return response.json();
+        })
+        .then((tasks) => {
+            tasks.forEach((task) => {
+                const $li = document.createElement('li');
+                const $button = document.createElement('button');
+                $button.textContent = task.completed ? 'Отменить выполнение' : 'Выполнить';
+
+                $li.dataset.id = task._id;
+                $li.textContent = task.title;
+                $li.appendChild($button);
+                $list.appendChild($li);
+            });
+        });
+    </script>
+</body>
+</html>

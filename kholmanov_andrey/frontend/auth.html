@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Auth</title>
+</head>
+<body>
+    <h1>Auth</h1>
+    <div>
+        <div>
+            <label for="email">E-mail</label>
+            <input type="text" id="email" placeholder="E-mail">
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <div>
+            <input type="submit" id="btn-send" value="Авторизоваться">
+        </div>
+
+        <script>
+            const $email = document.querySelector('#email');
+            const $password = document.querySelector('#password');
+            const $btnSend = document.querySelector('#btn-send');
+
+            $btnSend.addEventListener('click', (event) => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                fetch('/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: $email.value,
+                        password: $password.value,
+                    }),
+                })
+                .then((response) => {
+                    if(response.status !== 200){
+                        //Здесь можно что-то сделать с формой, подсветить красным, например
+                        return { token: null };
+                    }
+
+                    return response.json();
+                })
+                .then((response) => {
+                    if(response.token){
+                    const {token, ...user} = response;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                    window.location = '/'; //redirect
+                }
+                });
+
+                event.preventDefault();
+            });
+        </script>
+    </div>
+</body>
+</html>
