@@ -5,10 +5,10 @@ const Schema = mongoose.Schema
 const SALT_ROUNDS = 12
 
 const userSchema = new Schema({
-    email: {type: String, required: true},
-    firstName: {type: String},
-    lastName: {type: String},
-    password: {type: String, required: true}
+    email: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
+    password: { type: String, required: true }
 })
 
 userSchema.pre('save', function(next)  {
@@ -20,7 +20,8 @@ userSchema.pre('save', function(next)  {
     next()
 })
 
-userSchema.methods.validatePassword = function(candidate) {
+userSchema.methods.validatePassword = (candidate) => {
+    console.log(this.password)
     return bcrypt.compareSync(candidate, this.password)
 }
 
