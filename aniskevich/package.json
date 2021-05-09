@@ -24,7 +24,7 @@
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
     "gtts.js": "^1.0.1",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "iconv-lite": "^0.6.2",
     "inquirer": "^7.3.2",
     "minimist": "^1.2.5",
