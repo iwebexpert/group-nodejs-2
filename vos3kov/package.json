@@ -21,7 +21,7 @@
     "handlebars": "^4.7.6",
     "jsonwebtoken": "^8.5.1",
     "jzz": "^1.0.8",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "mongoose": "^5.9.26",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
