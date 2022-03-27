@@ -27,7 +27,7 @@
     "handlebars": "^4.7.6",
     "iconv-lite": "^0.6.2",
     "inquirer": "^7.3.2",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "mongoose": "^5.9.26",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
